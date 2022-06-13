@@ -29,7 +29,7 @@ public class GamePanel extends JPanel implements ActionListener {
         ItemSpawner.setBlueprint(map);
         Item.setBlueprint(map);
         this.snakes.add(new Snake(4, 100,3,3, null, map));
-        this.itemSpawners.add(new ItemSpawner(0, col/2, 0, row/2));
+        this.itemSpawners.add(new ItemSpawner(0, col, 0, row));
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
