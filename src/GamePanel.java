@@ -28,8 +28,11 @@ public class GamePanel extends JPanel implements ActionListener {
         this.map = new Blueprint(col, row);
         ItemSpawner.setBlueprint(map);
         Item.setBlueprint(map);
-        this.snakes.add(new Snake(4, 100,3,3, null, map));
-        this.itemSpawners.add(new ItemSpawner(0, col, 0, row));
+        this.snakes.add(new Snake(4, 150,3,3, null, map));
+        this.itemSpawners.add(new ItemSpawner(0, 0, col-1, row-1));
+        //this.itemSpawners.add(new ItemSpawner(1, 1, 2, 1));
+        //this.itemSpawners.add(new ItemSpawner((int) (col * .40), (int) (col * .60), (int) (row *.40), (int) (row * .60)));
+
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
