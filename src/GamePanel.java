@@ -31,11 +31,13 @@ public class GamePanel extends JPanel implements ActionListener {
         Item.setBlueprint(map);
         this.snakes.add(new Snake(4, 150,3,3, null, map));
         this.itemSpawners.add(new ItemSpawner(Apple.class, 0, 0, col-1, row-1, 3, 1000));
+        this.itemSpawners.add(new ItemSpawner(Banana.class, 0, 0, col-1, row-1, 1, 3000));
         Portal p = new Portal(null);
         Portal p1 = new Portal(null);
         p.linkPair(p1);
         p.setPosition(5, 5);
         p1.setPosition(col-5, row-5);
+        p1.setColor(new Color(255, 151, 0));
         this.itemOrphans.add(p);
         this.itemOrphans.add(p1);
         this.setPreferredSize(new Dimension(width, height));

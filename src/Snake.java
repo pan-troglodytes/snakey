@@ -29,7 +29,6 @@ public class Snake extends Item implements  ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println(this.value);
         turn();
         move();
         observe();

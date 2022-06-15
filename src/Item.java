@@ -54,5 +54,8 @@ public abstract class Item {
         return new int[] {x.get(0), y.get(0)};
     }
 
+    public void setColor(Color c) {
+        this.color = c;
+    }
 }
 
