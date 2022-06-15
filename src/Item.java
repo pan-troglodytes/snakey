@@ -2,12 +2,12 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public abstract class Item {
+    protected int value = 0;
     protected ArrayList<Integer> x = new ArrayList<>();
     protected ArrayList<Integer> y = new ArrayList<>();
     protected Color color;
     protected static Blueprint map;
     protected ItemSpawner spawner;
-
     public static void setBlueprint(Blueprint b) {
         map = b;
     }
@@ -24,6 +24,16 @@ public abstract class Item {
                 g.fillRect(i * tileSize, j * tileSize, tileSize, tileSize);
             }
         }
+    }
+
+    public void interact(Item interactee) {
+        interactee.addValue(value);
+        map.removeCoords(x.get(0), y.get(0), this);
+        die();
+    }
+
+    private void addValue(int value) {
+        this.value += value;
     }
 
     public void setPosition(int x, int y) {

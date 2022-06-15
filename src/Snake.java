@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Snake extends Item implements  ActionListener {
-    int bodyParts = 1;
+
     int xStart;
     int yStart;
     int sizeStart;
@@ -22,7 +22,7 @@ public class Snake extends Item implements  ActionListener {
         }
         color = new Color(0,255,0);
         this.sizeStart = startingSize;
-        this.bodyParts = startingSize;
+        this.value = startingSize;
         Timer timer = new Timer(delay,this);
         timer.start();
     }
@@ -43,9 +43,17 @@ public class Snake extends Item implements  ActionListener {
         }
     }
     public void move() {
-        for (int i = bodyParts; i > 0; i--) {
-            y.set(i,y.get(i-1));
-            x.set(i,x.get(i-1));
+        int partExtras = value - x.size()+1;
+        System.out.println(partExtras);
+        if (partExtras > 0) {
+            for (int j=0; j < partExtras; j++) {
+                x.add(x.get(x.size()-1)-1);
+                y.add(y.get(y.size()-1)-1);
+            }
+        }
+        for (int j = value; j > 0; j--) {
+            y.set(j,y.get(j-1));
+            x.set(j,x.get(j-1));
         }
         map.setCoords(x.get(0), y.get(0), this);
         map.removeCoords(x.get(x.size()-1), y.get(y.size()-1), this);
@@ -68,41 +76,31 @@ public class Snake extends Item implements  ActionListener {
                     die();
                 }
                 if (collisions.size() > 0 && collisions.get(i).getClass() == Apple.class) {
-                    grow();
-                    collisions.get(i).die();
-                    map.removeCoords(x.get(0), y.get(0), collisions.get(i));
+                    collisions.get(i).interact(this);
                 }
             }
         }
     }
 
+    @Override
     public void die() {
-        bodyParts = sizeStart;
-        for (int i=0; i < x.size(); i++) {
-            //map.removeCoord(x.get(i), y.get(i), this);
-        }
-        for (int j = x.size()-1; j > bodyParts; j--) {
+        value = sizeStart;
+        for (int j = x.size()-1; j > value; j--) {
             map.removeCoords(x.get(j), y.get(j), this);
             x.remove(j);
             y.remove(j);
         }
         map.removeCoords(x.get(x.size()-1), y.get(y.size()-1), this);
         x.set(0,xStart);
-        y.set(0, yStart);;
-    }
-
-    public void grow() {
-        x.add(x.get(x.size()-1)-1);
-        y.add(y.get(y.size()-1)-1);
-        bodyParts++;
+        y.set(0, yStart);
     }
 
     @Override
     public void draw(Graphics g, int tileSize) {
-        for ( int i = 0; i < bodyParts; i++ ) {
+        for (int i = 0; i < value; i++ ) {
             if (i == 0) {
                 g.setColor(new Color(162,65,65));
-            } else if (i == bodyParts-1) {
+            } else if (i == value -1) {
                 g.setColor(new Color(18,214,120));
             }else if ( i % 2 == 0) {
                 g.setColor(new Color(24,150,76));
