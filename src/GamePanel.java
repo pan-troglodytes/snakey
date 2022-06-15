@@ -16,6 +16,7 @@ public class GamePanel extends JPanel implements ActionListener {
     Blueprint map;
     ArrayList<ItemSpawner> itemSpawners = new ArrayList<>();
     ArrayList<Snake> snakes = new ArrayList<>();
+    ArrayList<Item> itemOrphans = new ArrayList<>();
 
     public GamePanel(int col, int row, int resolution, int scale) {
         this.resolution = resolution;
@@ -30,6 +31,13 @@ public class GamePanel extends JPanel implements ActionListener {
         Item.setBlueprint(map);
         this.snakes.add(new Snake(4, 150,3,3, null, map));
         this.itemSpawners.add(new ItemSpawner(Apple.class, 0, 0, col-1, row-1, 3, 1000));
+        Portal p = new Portal(null);
+        Portal p1 = new Portal(null);
+        p.linkPair(p1);
+        p.setPosition(5, 5);
+        p1.setPosition(col-5, row-5);
+        this.itemOrphans.add(p);
+        this.itemOrphans.add(p1);
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
@@ -53,6 +61,8 @@ public class GamePanel extends JPanel implements ActionListener {
         for (ItemSpawner itemSpawner : itemSpawners) {
             itemSpawner.drawItems(g, tileSize);
         }
+        for (Item item : itemOrphans) {
+            item.draw(g, tileSize);
+        }
     }
 }
-

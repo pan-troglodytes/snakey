@@ -27,12 +27,9 @@ public abstract class Item {
     }
 
     public void interact(Item interactee) {
-        interactee.addValue(value);
-        map.removeCoords(x.get(0), y.get(0), this);
-        die();
     }
 
-    private void addValue(int value) {
+    public void addValue(int value) {
         this.value += value;
     }
 
@@ -43,8 +40,19 @@ public abstract class Item {
     }
 
     public void die() {
-        spawner.remove(this);
+        if (spawner == null) {
+            x.clear();
+            y.clear();
+        } else {
+            map.removeCoords(x.get(0), y.get(0), this);
+            spawner.remove(this);
+        }
+
     }
 
+    public int[] getPosition() {
+        return new int[] {x.get(0), y.get(0)};
+    }
 
 }
+

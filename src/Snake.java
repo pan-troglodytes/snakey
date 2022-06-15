@@ -29,6 +29,7 @@ public class Snake extends Item implements  ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        System.out.println(this.value);
         turn();
         move();
         observe();
@@ -43,14 +44,7 @@ public class Snake extends Item implements  ActionListener {
         }
     }
     public void move() {
-        int partExtras = value - x.size()+1;
-        System.out.println(partExtras);
-        if (partExtras > 0) {
-            for (int j=0; j < partExtras; j++) {
-                x.add(x.get(x.size()-1)-1);
-                y.add(y.get(y.size()-1)-1);
-            }
-        }
+
         for (int j = value; j > 0; j--) {
             y.set(j,y.get(j-1));
             x.set(j,x.get(j-1));
@@ -66,7 +60,7 @@ public class Snake extends Item implements  ActionListener {
     }
 
 
-    private void observe() {
+    public void observe() {
         ArrayList<Item> collisions = map.getCoords(x.get(0), y.get(0));
         if (collisions == null ){
             die();
@@ -75,7 +69,7 @@ public class Snake extends Item implements  ActionListener {
                 if (collisions.get(i).getClass() == Snake.class) {
                     die();
                 }
-                if (collisions.size() > 0 && collisions.get(i).getClass() == Apple.class) {
+                if (collisions.size() > 0 && Item.class.isAssignableFrom(collisions.get(i).getClass())) {
                     collisions.get(i).interact(this);
                 }
             }
@@ -113,5 +107,19 @@ public class Snake extends Item implements  ActionListener {
 
     public KeyHandler getSnakeControls() {
         return keyHandler;
+    }
+
+    @Override
+    public void addValue(int value){
+        super.addValue(value);
+        // grow new segment for each new value point
+        for (int j=0; j < value; j++) {
+            x.add(x.get(x.size()-1));
+            y.add(y.get(y.size()-1));
+        }
+    }
+
+    public char getDirection() {
+        return direction;
     }
 }
