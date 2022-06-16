@@ -14,7 +14,8 @@ public class Snake extends Item implements  ActionListener {
     public char direction = 'r';
     KeyHandler keyHandler;
 
-    private Image headL, headR, headU, headD, bodyL, bodyR, bodyU, bodyD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU;
+
+    private Image headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU;
 
 
 
@@ -32,8 +33,8 @@ public class Snake extends Item implements  ActionListener {
         headR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-r.png"));
         headU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-u.png"));
         headD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-d.png"));
-        bodyL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-lr.png"));
-        bodyU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-ud.png"));
+        bodyLR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-lr.png"));
+        bodyUD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-ud.png"));
         cornerUR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-ur.png"));
         cornerRD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-rd.png"));
         cornerDL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-dl.png"));
@@ -57,6 +58,7 @@ public class Snake extends Item implements  ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        observe();
         turn();
         move();
         observe();
@@ -156,11 +158,11 @@ public class Snake extends Item implements  ActionListener {
                 }
             } else {
                 if (x.get(i) == x.get(i-1) || x.get(i) == x.get(i+1)) {
-                    drawWith = bodyU;
+                    drawWith = bodyUD;
                 }
 
                 if (y.get(i) == y.get(i-1) || y.get(i) == y.get(i+1)) {
-                    drawWith = bodyL;
+                    drawWith = bodyLR;
                 }
 
                 if (x.get(i-1) < x.get(i) && y.get(i-1) == y.get(i) && x.get(i+1) == x.get(i) && y.get(i+1) > y.get(i) ||
