@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -18,7 +19,7 @@ public class GamePanel extends JPanel implements ActionListener {
     ArrayList<Snake> snakes = new ArrayList<>();
     ArrayList<Item> itemOrphans = new ArrayList<>();
 
-    public GamePanel(int col, int row, int resolution, int scale) {
+    public GamePanel(int col, int row, int resolution, int scale) throws IOException {
         this.resolution = resolution;
         this.scale = scale;
         this.tileSize = resolution * scale;

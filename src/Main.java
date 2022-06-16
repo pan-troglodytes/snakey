@@ -1,7 +1,8 @@
 import javax.swing.*;
+import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setSize(500,500);
@@ -10,7 +11,7 @@ public class Main {
         window.setVisible(true);
         window.setResizable(false);
 
-        GamePanel gamePanel = new GamePanel(15, 15, 16, 2);
+        GamePanel gamePanel = new GamePanel(15, 15, 16, 3);
         window.add(gamePanel);
         window.pack();
     }

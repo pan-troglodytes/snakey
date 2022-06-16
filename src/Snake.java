@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Snake extends Item implements  ActionListener {
@@ -12,7 +13,11 @@ public class Snake extends Item implements  ActionListener {
     public char direction = 'r';
     KeyHandler keyHandler = new KeyHandler();
 
-    Snake(int startingSize, int delay, int x, int y, ItemSpawner spawner, Blueprint map) {
+    private Image headL, headR, headU, headD, bodyL, bodyR, bodyU, bodyD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU;
+
+
+
+    Snake(int startingSize, int delay, int x, int y, ItemSpawner spawner, Blueprint map) throws IOException {
         super(spawner);
         this.xStart = x;
         this.yStart = y;
@@ -20,6 +25,27 @@ public class Snake extends Item implements  ActionListener {
             this.x.add(x);
             this.y.add(y);
         }
+
+        headL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-l.png"));
+        headR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-r.png"));
+        headU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-u.png"));
+        headD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-d.png"));
+        bodyL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-lr.png"));
+        bodyU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-ud.png"));
+        cornerUR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-ur.png"));
+        cornerRD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-rd.png"));
+        cornerDL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-dl.png"));
+        cornerLU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-lu.png"));
+        tailU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-u.png"));
+        tailD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-d.png"));
+        tailL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-l.png"));
+        tailR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-r.png"));
+
+
+
+
+
+
         color = new Color(0,255,0);
         this.sizeStart = startingSize;
         this.value = startingSize;
@@ -100,7 +126,64 @@ public class Snake extends Item implements  ActionListener {
             } else {
                 g.setColor(new Color(45,232,55));
             }
-            g.fillRect(x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize);
+
+            Image drawWith = headU;
+
+            if (i == 0) {
+                if (direction == 'l') {
+                    drawWith = headL;
+                } else if (direction == 'd') {
+                    drawWith = headD;
+                } else if (direction == 'u') {
+                    drawWith = headU;
+                } else if (direction == 'r') {
+                    drawWith = headR;
+                }
+            } else if (i == value - 1) {
+                if (x.get(i-1) < x.get(i) && y.get(i-1) == y.get(i)) {
+                    drawWith = tailL;
+                }
+                if ((x.get(i-1) > x.get(i) && y.get(i-1) == y.get(i))) {
+                    drawWith = tailR;
+                }
+                if (y.get(i-1) < y.get(i) && x.get(i-1) == x.get(i)) {
+                    drawWith = tailU;
+                }
+                if (y.get(i-1) > y.get(i) && x.get(i-1) == x.get(i)) {
+                    drawWith = tailD;
+                }
+            } else {
+                if (x.get(i) == x.get(i-1) || x.get(i) == x.get(i+1)) {
+                    drawWith = bodyU;
+                }
+
+                if (y.get(i) == y.get(i-1) || y.get(i) == y.get(i+1)) {
+                    drawWith = bodyL;
+                }
+
+                if (x.get(i-1) < x.get(i) && y.get(i-1) == y.get(i) && x.get(i+1) == x.get(i) && y.get(i+1) > y.get(i) ||
+                        x.get(i+1) < x.get(i) && y.get(i+1) == y.get(i) && x.get(i-1) == x.get(i) && y.get(i-1) > y.get(i)){
+                    drawWith = cornerDL;
+                }
+
+                if (x.get(i-1) > x.get(i) && y.get(i-1) == y.get(i) && x.get(i+1) == x.get(i) && y.get(i+1) < y.get(i) ||
+                        x.get(i+1) > x.get(i) && y.get(i+1) == y.get(i) && x.get(i-1) == x.get(i) && y.get(i-1) < y.get(i)){
+                    drawWith = cornerUR;
+                }
+
+                if (x.get(i-1) > x.get(i) && y.get(i-1) == y.get(i) && x.get(i+1) == x.get(i) && y.get(i+1) > y.get(i) ||
+                        x.get(i+1) > x.get(i) && y.get(i+1) == y.get(i) && x.get(i-1) == x.get(i) && y.get(i-1) > y.get(i)){
+                    drawWith = cornerRD;
+                }
+
+                if (x.get(i-1) < x.get(i) && y.get(i-1) == y.get(i) && x.get(i+1) == x.get(i) && y.get(i+1) < y.get(i) ||
+                        x.get(i+1) < x.get(i) && y.get(i+1) == y.get(i) && x.get(i-1) == x.get(i) && y.get(i-1) < y.get(i)){
+                    drawWith = cornerLU;
+                }
+            }
+
+            g.drawImage(drawWith, x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize, null);
+            //g.fillRect(x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize);
         }
     }
 
