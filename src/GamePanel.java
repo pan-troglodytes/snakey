@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,7 +31,8 @@ public class GamePanel extends JPanel implements ActionListener {
         this.map = new Blueprint(col, row);
         ItemSpawner.setBlueprint(map);
         Item.setBlueprint(map);
-        this.snakes.add(new Snake(4, 150,3,3, null, map));
+        this.snakes.add(new Snake(new KeyHandler(KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K), 4, 150,3,3, null, map));
+        //this.snakes.add(new Snake(new KeyHandler(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D), 4, 150,3,3, null, map));
         this.itemSpawners.add(new ItemSpawner(Apple.class, 0, 0, col-1, row-1, 3, 1000));
         this.itemSpawners.add(new ItemSpawner(Banana.class, 0, 0, col-1, row-1, 1, 3000));
         Portal p = new Portal(null);

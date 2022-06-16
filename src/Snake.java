@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -11,14 +12,15 @@ public class Snake extends Item implements  ActionListener {
     int yStart;
     int sizeStart;
     public char direction = 'r';
-    KeyHandler keyHandler = new KeyHandler();
+    KeyHandler keyHandler;
 
     private Image headL, headR, headU, headD, bodyL, bodyR, bodyU, bodyD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU;
 
 
 
-    Snake(int startingSize, int delay, int x, int y, ItemSpawner spawner, Blueprint map) throws IOException {
+    Snake(KeyHandler keyHandler, int startingSize, int delay, int x, int y, ItemSpawner spawner, Blueprint map) throws IOException {
         super(spawner);
+        this.keyHandler = keyHandler;
         this.xStart = x;
         this.yStart = y;
         for (int i=0; i <= startingSize; i++) {

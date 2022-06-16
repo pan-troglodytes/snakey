@@ -4,6 +4,14 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler extends KeyAdapter {
 
+    int up, down, left, right;
+
+    KeyHandler(int up, int down, int left, int right) {
+        this.up = up;
+        this.down = down;
+        this.left = left;
+        this.right = right;
+    }
     public char directionNew = 'd';
 
     @Override
@@ -15,16 +23,16 @@ public class KeyHandler extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
         int keycode = e.getKeyCode();
 
-        if (keycode == KeyEvent.VK_H) {
+        if (keycode == left) {
             directionNew = 'l';
         }
-        if (keycode == KeyEvent.VK_J) {
+        if (keycode == down) {
             directionNew = 'd';
         }
-        if (keycode == KeyEvent.VK_I) {
+        if (keycode == up) {
             directionNew = 'u';
         }
-        if (keycode == KeyEvent.VK_K) {
+        if (keycode == right) {
             directionNew = 'r';
         }
 
