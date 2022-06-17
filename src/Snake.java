@@ -108,11 +108,19 @@ public class Snake extends Item implements  ActionListener {
     @Override
     public void die() {
         value = sizeStart;
-        for (int j = x.size()-1; j > value; j--) {
-            map.removeCoords(x.get(j), y.get(j), this);
-            x.remove(j);
-            y.remove(j);
+        if (x.size() > value) {
+            for (int j = x.size()-1; j > value; j--) {
+                map.removeCoords(x.get(j), y.get(j), this);
+                x.remove(j);
+                y.remove(j);
+            }
+        } else {
+            for (int i = x.size(); i <= value; i++) {
+                x.add(xStart);
+                y.add(yStart);
+            }
         }
+
         map.removeCoords(x.get(x.size()-1), y.get(y.size()-1), this);
         x.set(0,xStart);
         y.set(0, yStart);
@@ -120,74 +128,67 @@ public class Snake extends Item implements  ActionListener {
 
     @Override
     public void draw(Graphics g, int tileSize) {
+
         for (int i = 0; i < value; i++ ) {
-            if (i == 0) {
-                g.setColor(new Color(162,65,65));
-            } else if (i == value -1) {
-                g.setColor(new Color(18,214,120));
-            }else if ( i % 2 == 0) {
-                g.setColor(new Color(24,150,76));
-            } else {
-                g.setColor(new Color(45,232,55));
-            }
+            Image drawWith = null;
 
-            Image drawWith = headU;
+                if (i == 0) {
+                    if (direction == 'l') {
+                        drawWith = headL;
+                    } else if (direction == 'd') {
+                        drawWith = headD;
+                    } else if (direction == 'u') {
+                        drawWith = headU;
+                    } else if (direction == 'r') {
+                        drawWith = headR;
+                    }
+                } else if (i == value - 1) {
+                    if (x.get(i - 1) < x.get(i) && y.get(i - 1) == y.get(i)) {
+                        drawWith = tailL;
+                    }
+                    if ((x.get(i - 1) > x.get(i) && y.get(i - 1) == y.get(i))) {
+                        drawWith = tailR;
+                    }
+                    if (y.get(i - 1) < y.get(i) && x.get(i - 1) == x.get(i)) {
+                        drawWith = tailU;
+                    }
+                    if (y.get(i - 1) > y.get(i) && x.get(i - 1) == x.get(i)) {
+                        drawWith = tailD;
+                    }
+                } else {
+                        if (x.get(i) == x.get(i - 1) || x.get(i) == x.get(i + 1)) {
+                            drawWith = bodyUD;
+                        }
 
-            if (i == 0) {
-                if (direction == 'l') {
-                    drawWith = headL;
-                } else if (direction == 'd') {
-                    drawWith = headD;
-                } else if (direction == 'u') {
-                    drawWith = headU;
-                } else if (direction == 'r') {
-                    drawWith = headR;
-                }
-            } else if (i == value - 1) {
-                if (x.get(i-1) < x.get(i) && y.get(i-1) == y.get(i)) {
-                    drawWith = tailL;
-                }
-                if ((x.get(i-1) > x.get(i) && y.get(i-1) == y.get(i))) {
-                    drawWith = tailR;
-                }
-                if (y.get(i-1) < y.get(i) && x.get(i-1) == x.get(i)) {
-                    drawWith = tailU;
-                }
-                if (y.get(i-1) > y.get(i) && x.get(i-1) == x.get(i)) {
-                    drawWith = tailD;
-                }
-            } else {
-                if (x.get(i) == x.get(i-1) || x.get(i) == x.get(i+1)) {
-                    drawWith = bodyUD;
-                }
+                        if (y.get(i) == y.get(i - 1) || y.get(i) == y.get(i + 1)) {
+                            drawWith = bodyLR;
+                        }
 
-                if (y.get(i) == y.get(i-1) || y.get(i) == y.get(i+1)) {
-                    drawWith = bodyLR;
-                }
+                        if (x.get(i - 1) < x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) > y.get(i) ||
+                                x.get(i + 1) < x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) > y.get(i)) {
+                            drawWith = cornerDL;
+                        }
 
-                if (x.get(i-1) < x.get(i) && y.get(i-1) == y.get(i) && x.get(i+1) == x.get(i) && y.get(i+1) > y.get(i) ||
-                        x.get(i+1) < x.get(i) && y.get(i+1) == y.get(i) && x.get(i-1) == x.get(i) && y.get(i-1) > y.get(i)){
-                    drawWith = cornerDL;
-                }
+                        if (x.get(i - 1) > x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) < y.get(i) ||
+                                x.get(i + 1) > x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) < y.get(i)) {
+                            drawWith = cornerUR;
+                        }
 
-                if (x.get(i-1) > x.get(i) && y.get(i-1) == y.get(i) && x.get(i+1) == x.get(i) && y.get(i+1) < y.get(i) ||
-                        x.get(i+1) > x.get(i) && y.get(i+1) == y.get(i) && x.get(i-1) == x.get(i) && y.get(i-1) < y.get(i)){
-                    drawWith = cornerUR;
-                }
+                        if (x.get(i - 1) > x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) > y.get(i) ||
+                                x.get(i + 1) > x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) > y.get(i)) {
+                            drawWith = cornerRD;
+                        }
 
-                if (x.get(i-1) > x.get(i) && y.get(i-1) == y.get(i) && x.get(i+1) == x.get(i) && y.get(i+1) > y.get(i) ||
-                        x.get(i+1) > x.get(i) && y.get(i+1) == y.get(i) && x.get(i-1) == x.get(i) && y.get(i-1) > y.get(i)){
-                    drawWith = cornerRD;
+                        if (x.get(i - 1) < x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) < y.get(i) ||
+                                x.get(i + 1) < x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) < y.get(i)) {
+                            drawWith = cornerLU;
+                        }
+
                 }
 
-                if (x.get(i-1) < x.get(i) && y.get(i-1) == y.get(i) && x.get(i+1) == x.get(i) && y.get(i+1) < y.get(i) ||
-                        x.get(i+1) < x.get(i) && y.get(i+1) == y.get(i) && x.get(i-1) == x.get(i) && y.get(i-1) < y.get(i)){
-                    drawWith = cornerLU;
-                }
-            }
 
-            g.drawImage(drawWith, x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize, null);
-            //g.fillRect(x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize);
+                g.drawImage(drawWith, x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize, null);
+
         }
     }
 
@@ -198,11 +199,25 @@ public class Snake extends Item implements  ActionListener {
     @Override
     public void addValue(int value){
         super.addValue(value);
-        // grow new segment for each new value point
-        for (int j=0; j < value; j++) {
-            x.add(x.get(x.size()-1));
-            y.add(y.get(y.size()-1));
+        if (this.value < 1) {
+            die();
+            return;
         }
+
+        // grow new segment for each new value point
+        if (value > 0) {
+            for (int j=0; j < value; j++) {
+                x.add(x.get(x.size()-1));
+                y.add(y.get(y.size()-1));
+            }
+        } else {
+            for (int i=value; i < 0; i++) {
+                map.removeCoords(x.get(x.size()-2), y.get(y.size()-2), this);
+                x.remove(x.size()-1);
+                y.remove(y.size()-1);
+            }
+        }
+
     }
 
     public char getDirection() {
