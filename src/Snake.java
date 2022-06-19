@@ -13,9 +13,8 @@ public class Snake extends Item implements  ActionListener {
     int sizeStart;
     public char direction = 'r';
     KeyHandler keyHandler;
-
-
     private Image headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU;
+    ArrayList<Character> d = new ArrayList<>();
 
 
 
@@ -27,6 +26,7 @@ public class Snake extends Item implements  ActionListener {
         for (int i=0; i <= startingSize; i++) {
             this.x.add(x);
             this.y.add(y);
+            d.add(direction);
         }
 
         headL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-l.png"));
@@ -62,6 +62,7 @@ public class Snake extends Item implements  ActionListener {
         turn();
         move();
         observe();
+        System.out.println(d);
     }
 
     public void turn() {
@@ -70,6 +71,7 @@ public class Snake extends Item implements  ActionListener {
                 direction == 'd' && keyHandler.directionNew != 'u' ||
                 direction == 'u' && keyHandler.directionNew != 'd') {
             direction = keyHandler.directionNew;
+            d.set(0,direction);
         }
     }
     public void move() {
@@ -77,6 +79,7 @@ public class Snake extends Item implements  ActionListener {
         for (int j = value; j > 0; j--) {
             y.set(j,y.get(j-1));
             x.set(j,x.get(j-1));
+            d.set(j,d.get(j-1));
         }
         map.setCoords(x.get(0), y.get(0), this);
         map.removeCoords(x.get(x.size()-1), y.get(y.size()-1), this);
@@ -113,11 +116,13 @@ public class Snake extends Item implements  ActionListener {
                 map.removeCoords(x.get(j), y.get(j), this);
                 x.remove(j);
                 y.remove(j);
+                d.remove(j);
             }
         } else {
             for (int i = x.size(); i <= value; i++) {
                 x.add(xStart);
                 y.add(yStart);
+                d.add(direction);
             }
         }
 
@@ -176,30 +181,19 @@ public class Snake extends Item implements  ActionListener {
 
 
 
-
-                    if (x.get(i - 1) < x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) > y.get(i) ||
-                            x.get(i + 1) < x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) > y.get(i)) {
+                    // previoius one is facing the right and next one is higher up
+                    if (d.get(i+1) == 'r' && d.get(i-1) != 'u' && d.get(i) == 'd'  || d.get(i+1) == 'u' && d.get(i-1) != 'r' && d.get(i) == 'l'  ) {
                         drawWith = cornerDL;
                     }
-
-                    if (x.get(i - 1) > x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) < y.get(i) ||
-                            x.get(i + 1) > x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) < y.get(i)) {
+                    if (d.get(i+1) == 'l' && d.get(i-1) != 'd' && d.get(i) == 'u'  || d.get(i+1) == 'd' && d.get(i-1) != 'l' && d.get(i) == 'r'  ) {
                         drawWith = cornerUR;
                     }
-
-                    if (x.get(i - 1) > x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) > y.get(i) ||
-                            x.get(i + 1) > x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) > y.get(i)) {
+                    if (d.get(i+1) == 'l' && d.get(i-1) != 'u' && d.get(i) == 'd'  || d.get(i+1) == 'u' && d.get(i-1) != 'l' && d.get(i) == 'r'  ) {
                         drawWith = cornerRD;
                     }
-
-                    if (x.get(i - 1) < x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) < y.get(i) ||
-                            x.get(i + 1) < x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) < y.get(i)) {
+                    if (d.get(i+1) == 'r' && d.get(i-1) != 'd' && d.get(i) == 'u'  || d.get(i+1) == 'd' && d.get(i-1) != 'r' && d.get(i) == 'l'  ) {
                         drawWith = cornerLU;
                     }
-
-
-
-
             }
 
             g.drawImage(drawWith, x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize, null);
@@ -224,12 +218,14 @@ public class Snake extends Item implements  ActionListener {
             for (int j=0; j < value; j++) {
                 x.add(x.get(x.size()-1));
                 y.add(y.get(y.size()-1));
+                d.add(d.get(d.size()-1));
             }
         } else {
             for (int i=value; i < 0; i++) {
                 map.removeCoords(x.get(x.size()-2), y.get(y.size()-2), this);
                 x.remove(x.size()-1);
                 y.remove(y.size()-1);
+                d.remove(d.size()-1);
             }
         }
 
