@@ -13,7 +13,7 @@ public class Snake extends Item implements  ActionListener {
     int sizeStart;
     public char direction = 'r';
     KeyHandler keyHandler;
-    private Image headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU;
+    private Image headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
     ArrayList<Character> d = new ArrayList<>();
 
     Snake(KeyHandler keyHandler, int startingSize, int delay, int x, int y, ItemSpawner spawner, Blueprint map) throws IOException {
@@ -41,6 +41,10 @@ public class Snake extends Item implements  ActionListener {
         tailD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-d.png"));
         tailL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-l.png"));
         tailR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-r.png"));
+        beheadD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-behead-d.png"));
+        beheadL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-behead-l.png"));
+        beheadR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-behead-r.png"));
+        beheadU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-behead-u.png"));
 
         color = new Color(0,255,0);
         this.sizeStart = startingSize;
@@ -123,20 +127,34 @@ public class Snake extends Item implements  ActionListener {
 
     @Override
     public void draw(Graphics g, int tileSize) {
+        System.out.println(value);
         for (int i = 0; i < value; i++ ) {
             Image drawWith = null;
+
                 if (i == 0) {
-                    if (direction == 'l') {
-                        drawWith = headL;
-                    } else if (direction == 'd') {
-                        drawWith = headD;
-                    } else if (direction == 'u') {
-                        drawWith = headU;
-                    } else if (direction == 'r') {
-                        drawWith = headR;
+                    if (value == 1) {
+                        if (direction == 'l') {
+                            drawWith = beheadL;
+                        } else if (direction == 'd') {
+                            drawWith = beheadD;
+                        } else if (direction == 'u') {
+                            drawWith = beheadU;
+                        } else if (direction == 'r') {
+                            drawWith = beheadR;
+                        }
+                    } else {
+                        if (direction == 'l') {
+                            drawWith = headL;
+                        } else if (direction == 'd') {
+                            drawWith = headD;
+                        } else if (direction == 'u') {
+                            drawWith = headU;
+                        } else if (direction == 'r') {
+                            drawWith = headR;
+                        }
                     }
                 } else if (i == value -1 ) {
-                    for (int j=i; j > 0; j--) {
+                    for (int j=i; j >= 0; j--) {
                         if (x.get(j) != x.get(i) || y.get(j) != y.get(i)) {
                             if (y.get(j) < y.get(i) && x.get(j) == x.get(i)) {
                                 drawWith = tailU;
