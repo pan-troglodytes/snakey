@@ -142,52 +142,67 @@ public class Snake extends Item implements  ActionListener {
                     } else if (direction == 'r') {
                         drawWith = headR;
                     }
-                } else if (i == value - 1) {
-                    if (x.get(i - 1) < x.get(i) && y.get(i - 1) == y.get(i)) {
-                        drawWith = tailL;
+                } else if (i == value -1 ) {
+                    for (int j=i; j > 0; j--) {
+                        if (x.get(j) != x.get(i) || y.get(j) != y.get(i)) {
+
+                            if (y.get(j) < y.get(i) && x.get(j) == x.get(i)) {
+                                drawWith = tailU;
+                            }
+                            if (y.get(j) > y.get(i) && x.get(j) == x.get(i)) {
+                                drawWith = tailD;
+                            }
+                            if (x.get(j) < x.get(i) && y.get(j) == y.get(i)) {
+                                drawWith = tailL;
+                            }
+                            if (x.get(j) > x.get(i) && y.get(j) == y.get(i)) {
+                                drawWith = tailR;
+                            }
+                            break;
+                        }
                     }
-                    if ((x.get(i - 1) > x.get(i) && y.get(i - 1) == y.get(i))) {
-                        drawWith = tailR;
-                    }
-                    if (y.get(i - 1) < y.get(i) && x.get(i - 1) == x.get(i)) {
-                        drawWith = tailU;
-                    }
-                    if (y.get(i - 1) > y.get(i) && x.get(i - 1) == x.get(i)) {
-                        drawWith = tailD;
-                    }
+
+
                 } else {
-                        if (x.get(i) == x.get(i - 1) || x.get(i) == x.get(i + 1)) {
-                            drawWith = bodyUD;
-                        }
-
-                        if (y.get(i) == y.get(i - 1) || y.get(i) == y.get(i + 1)) {
-                            drawWith = bodyLR;
-                        }
-
-                        if (x.get(i - 1) < x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) > y.get(i) ||
-                                x.get(i + 1) < x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) > y.get(i)) {
-                            drawWith = cornerDL;
-                        }
-
-                        if (x.get(i - 1) > x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) < y.get(i) ||
-                                x.get(i + 1) > x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) < y.get(i)) {
-                            drawWith = cornerUR;
-                        }
-
-                        if (x.get(i - 1) > x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) > y.get(i) ||
-                                x.get(i + 1) > x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) > y.get(i)) {
-                            drawWith = cornerRD;
-                        }
-
-                        if (x.get(i - 1) < x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) < y.get(i) ||
-                                x.get(i + 1) < x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) < y.get(i)) {
-                            drawWith = cornerLU;
-                        }
-
-                }
 
 
-                g.drawImage(drawWith, x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize, null);
+                    if (x.get(i) == x.get(i - 1) && y.get(i) != y.get(i-1)  && y.get(i) != y.get(i+1) || x.get(i) == x.get(i + 1) && y.get(i) != y.get(i+1)  && y.get(i) != y.get(i-1) ) {
+                        drawWith = bodyUD;
+                    }
+
+                    if (y.get(i) == y.get(i - 1) && x.get(i) != x.get(i-1) && x.get(i) != x.get(i+1) || y.get(i) == y.get(i + 1) && x.get(i) != x.get(i+1) && x.get(i) != x.get(i-1)) {
+                        drawWith = bodyLR;
+                    }
+
+
+
+
+                    if (x.get(i - 1) < x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) > y.get(i) ||
+                            x.get(i + 1) < x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) > y.get(i)) {
+                        drawWith = cornerDL;
+                    }
+
+                    if (x.get(i - 1) > x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) < y.get(i) ||
+                            x.get(i + 1) > x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) < y.get(i)) {
+                        drawWith = cornerUR;
+                    }
+
+                    if (x.get(i - 1) > x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) > y.get(i) ||
+                            x.get(i + 1) > x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) > y.get(i)) {
+                        drawWith = cornerRD;
+                    }
+
+                    if (x.get(i - 1) < x.get(i) && y.get(i - 1) == y.get(i) && x.get(i + 1) == x.get(i) && y.get(i + 1) < y.get(i) ||
+                            x.get(i + 1) < x.get(i) && y.get(i + 1) == y.get(i) && x.get(i - 1) == x.get(i) && y.get(i - 1) < y.get(i)) {
+                        drawWith = cornerLU;
+                    }
+
+
+
+
+            }
+
+            g.drawImage(drawWith, x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize, null);
 
         }
     }

@@ -15,9 +15,9 @@ public abstract class Fruit extends Item implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
 		if (!rotten) {
-			rotten = true;
 			value = -value;
 			color= colorRotten;
+			rotten = true;
 		} else {
 			die();
 		}
