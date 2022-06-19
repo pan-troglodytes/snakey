@@ -16,8 +16,6 @@ public class Snake extends Item implements  ActionListener {
     private Image headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU;
     ArrayList<Character> d = new ArrayList<>();
 
-
-
     Snake(KeyHandler keyHandler, int startingSize, int delay, int x, int y, ItemSpawner spawner, Blueprint map) throws IOException {
         super(spawner);
         this.keyHandler = keyHandler;
@@ -44,11 +42,6 @@ public class Snake extends Item implements  ActionListener {
         tailL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-l.png"));
         tailR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-r.png"));
 
-
-
-
-
-
         color = new Color(0,255,0);
         this.sizeStart = startingSize;
         this.value = startingSize;
@@ -62,7 +55,6 @@ public class Snake extends Item implements  ActionListener {
         turn();
         move();
         observe();
-        System.out.println(d);
     }
 
     public void turn() {
@@ -75,7 +67,6 @@ public class Snake extends Item implements  ActionListener {
         }
     }
     public void move() {
-
         for (int j = value; j > 0; j--) {
             y.set(j,y.get(j-1));
             x.set(j,x.get(j-1));
@@ -125,7 +116,6 @@ public class Snake extends Item implements  ActionListener {
                 d.add(direction);
             }
         }
-
         map.removeCoords(x.get(x.size()-1), y.get(y.size()-1), this);
         x.set(0,xStart);
         y.set(0, yStart);
@@ -133,10 +123,8 @@ public class Snake extends Item implements  ActionListener {
 
     @Override
     public void draw(Graphics g, int tileSize) {
-
         for (int i = 0; i < value; i++ ) {
             Image drawWith = null;
-
                 if (i == 0) {
                     if (direction == 'l') {
                         drawWith = headL;
@@ -150,7 +138,6 @@ public class Snake extends Item implements  ActionListener {
                 } else if (i == value -1 ) {
                     for (int j=i; j > 0; j--) {
                         if (x.get(j) != x.get(i) || y.get(j) != y.get(i)) {
-
                             if (y.get(j) < y.get(i) && x.get(j) == x.get(i)) {
                                 drawWith = tailU;
                             }
@@ -166,11 +153,7 @@ public class Snake extends Item implements  ActionListener {
                             break;
                         }
                     }
-
-
                 } else {
-
-
                     if (x.get(i) == x.get(i - 1) && y.get(i) != y.get(i-1)  && y.get(i) != y.get(i+1) || x.get(i) == x.get(i + 1) && y.get(i) != y.get(i+1)  && y.get(i) != y.get(i-1) ) {
                         drawWith = bodyUD;
                     }
@@ -179,25 +162,23 @@ public class Snake extends Item implements  ActionListener {
                         drawWith = bodyLR;
                     }
 
-
-
-                    // previoius one is facing the right and next one is higher up
-                    if (d.get(i+1) == 'r' && d.get(i-1) != 'u' && d.get(i) == 'd'  || d.get(i+1) == 'u' && d.get(i-1) != 'r' && d.get(i) == 'l'  ) {
+                    // if the previous segment is facing the right and the current segment is facing down
+                    // OR
+                    // the previous segment is facing up and the current segment is facing the left
+                    if (d.get(i+1) == 'r' && d.get(i) == 'd' || d.get(i+1) == 'u' && d.get(i) == 'l') {
                         drawWith = cornerDL;
                     }
-                    if (d.get(i+1) == 'l' && d.get(i-1) != 'd' && d.get(i) == 'u'  || d.get(i+1) == 'd' && d.get(i-1) != 'l' && d.get(i) == 'r'  ) {
+                    if (d.get(i+1) == 'l' && d.get(i) == 'u' || d.get(i+1) == 'd' && d.get(i) == 'r') {
                         drawWith = cornerUR;
                     }
-                    if (d.get(i+1) == 'l' && d.get(i-1) != 'u' && d.get(i) == 'd'  || d.get(i+1) == 'u' && d.get(i-1) != 'l' && d.get(i) == 'r'  ) {
+                    if (d.get(i+1) == 'l' && d.get(i) == 'd' || d.get(i+1) == 'u' && d.get(i) == 'r') {
                         drawWith = cornerRD;
                     }
-                    if (d.get(i+1) == 'r' && d.get(i-1) != 'd' && d.get(i) == 'u'  || d.get(i+1) == 'd' && d.get(i-1) != 'r' && d.get(i) == 'l'  ) {
+                    if (d.get(i+1) == 'r' && d.get(i) == 'u' || d.get(i+1) == 'd' && d.get(i) == 'l') {
                         drawWith = cornerLU;
                     }
             }
-
             g.drawImage(drawWith, x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize, null);
-
         }
     }
 
