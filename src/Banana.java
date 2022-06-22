@@ -9,12 +9,5 @@ public class Banana extends Fruit {
 		new Timer(2000, this).start();
 		color = new Color(255, 215, 0);
 		colorRotten = new Color(111, 75, 4);
-
 	}
-	@Override
-	public void interact(Item interactee) {
-		interactee.addValue(value);
-		die();
-	}
-
 }

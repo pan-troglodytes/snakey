@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -11,9 +10,9 @@ public class Snake extends Item implements  ActionListener {
     int xStart;
     int yStart;
     int sizeStart;
-    public char direction = 'r';
+    char direction = 'r';
     KeyHandler keyHandler;
-    private Image headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
+    Image headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
     ArrayList<Character> d = new ArrayList<>();
 
     Snake(KeyHandler keyHandler, int startingSize, int delay, int x, int y, ItemSpawner spawner, Blueprint map) throws IOException {
@@ -86,7 +85,6 @@ public class Snake extends Item implements  ActionListener {
         }
     }
 
-
     public void observe() {
         ArrayList<Item> collisions = map.getCoords(x.get(0), y.get(0));
         if (collisions == null ){
@@ -127,10 +125,8 @@ public class Snake extends Item implements  ActionListener {
 
     @Override
     public void draw(Graphics g, int tileSize) {
-        System.out.println(value);
         for (int i = 0; i < value; i++ ) {
-            Image drawWith = null;
-
+            Image drawWith = null; 
                 if (i == 0) {
                     if (value == 1) {
                         if (direction == 'l') {

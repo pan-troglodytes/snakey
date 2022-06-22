@@ -9,12 +9,5 @@ public class Apple extends Fruit {
         new Timer(4000, this).start();
         color = new Color(255, 0, 0);
         colorRotten = new Color(85, 151, 109);
-
     }
-@Override
-    public void interact(Item interactee) {
-        interactee.addValue(value);
-        die();
-    }
-
 }

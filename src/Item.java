@@ -2,16 +2,15 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public abstract class Item {
-    protected int value = 0;
-    protected ArrayList<Integer> x = new ArrayList<>();
-    protected ArrayList<Integer> y = new ArrayList<>();
-    protected Color color;
-    protected static Blueprint map;
-    protected ItemSpawner spawner;
-    public static void setBlueprint(Blueprint b) {
+    int value = 0;
+    ArrayList<Integer> x = new ArrayList<>();
+    ArrayList<Integer> y = new ArrayList<>();
+    Color color;
+    static Blueprint map;
+     ItemSpawner spawner;
+    static void setBlueprint(Blueprint b) {
         map = b;
     }
-
 
     public Item(ItemSpawner spawner) {
         this.spawner = spawner;
@@ -47,7 +46,6 @@ public abstract class Item {
             map.removeCoords(x.get(0), y.get(0), this);
             spawner.remove(this);
         }
-
     }
 
     public int[] getPosition() {
@@ -58,4 +56,3 @@ public abstract class Item {
         this.color = c;
     }
 }
-

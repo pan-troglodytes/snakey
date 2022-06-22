@@ -7,14 +7,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class ItemSpawner implements ActionListener {
-    private static Blueprint map;
-    private ArrayList<Item> items = new ArrayList<>();
-    private int itemMax = 3;
-    private int[] coordsTopLeft;
-    private int[] coordsBotRight;
+    static Blueprint map;
+    ArrayList<Item> items = new ArrayList<>();
+    int itemMax = 3;
+    int[] coordsTopLeft;
+    int[] coordsBotRight;
 
-    private Class<?> itemType;
-    private boolean oneTime;
+    Class<?> itemType;
     private Timer timer;
     public static void setBlueprint(Blueprint b) {
         map = b;
@@ -56,8 +55,6 @@ public class ItemSpawner implements ActionListener {
                 itemNew.setPosition(newPos.get(0), newPos.get(1));
                 items.add(itemNew);
             }
-        } else if (oneTime) {
-            timer.stop();
         }
     }
 

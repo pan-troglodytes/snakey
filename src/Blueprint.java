@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Blueprint {
-    final ArrayList<ArrayList<ArrayList<Item>>> xy = new ArrayList<>();
+    ArrayList<ArrayList<ArrayList<Item>>> xy = new ArrayList<>();
 
     Blueprint(int maxScreenCol, int maxScreenRow) {
        for (int i=0; i < maxScreenCol; i++) {
@@ -33,6 +33,4 @@ public class Blueprint {
             System.out.println(xy.get(i));
         }
     }
-
-
 }

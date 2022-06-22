@@ -4,8 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public abstract class Fruit extends Item implements ActionListener {
-	protected boolean rotten = false;
-	protected Color colorRotten;
+	boolean rotten = false;
+	Color colorRotten;
 	public Fruit(ItemSpawner spawner) {
 		super(spawner);
 		x.add(0);
@@ -21,5 +21,11 @@ public abstract class Fruit extends Item implements ActionListener {
 		} else {
 			die();
 		}
+	}
+
+	@Override
+	public void interact(Item interactee) {
+		interactee.addValue(value);
+		die();
 	}
 }
