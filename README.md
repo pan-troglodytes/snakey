@@ -1,13 +1,14 @@
 # snakey
 a snake game with extra features like portals and varied food and user customization
-
-![snakey01]("screenshots/snakey01.png" "snakey eats food")
-![snakey04]("screenshots/snakey04.png" "snakey grows")
-![snakey05]("screenshots/snakey05.png" "snakey grows")
-![snakry03]("screenshots/snakey03.png" "snakey avoids rotten food")
-![snakey02]("screenshots/snakey02.png" "snakey goes through portal")
-![rotten01]("screenshots/rotten01.png" "snakey sees rotten food")
-![rotten02]("screenshots/rotten02.png" "snakey eats rotten food")
-![rotten03]("screenshots/rotten03.png" "snakey has no body")
-![rotten04]("screenshots/rotten04.png" "snakey recovers")
-![rotten05]("screenshots/rotten05.png" "snakey goes on his way")
+<p align="center">
+	<img alt="snakey01" src="https://raw.githubusercontent.com/pan-troglodytes/snakey/master/screenshots/snakey01.png"> 
+	<img alt="snakey04" src="https://raw.githubusercontent.com/pan-troglodytes/snakey/master/screenshots/snakey04.png">
+	<img alt="snakey05" src="https://raw.githubusercontent.com/pan-troglodytes/snakey/master/screenshots/snakey05.png">
+	<img alt="snakry03" src="https://raw.githubusercontent.com/pan-troglodytes/snakey/master/screenshots/snakey03.png">
+	<img alt="snakey02" src="https://raw.githubusercontent.com/pan-troglodytes/snakey/master/screenshots/snakey02.png">
+	<img alt="rotten01" src="https://raw.githubusercontent.com/pan-troglodytes/snakey/master/screenshots/rotten01.png">
+	<img alt="rotten02" src="https://raw.githubusercontent.com/pan-troglodytes/snakey/master/screenshots/rotten02.png">
+	<img alt="rotten03" src="https://raw.githubusercontent.com/pan-troglodytes/snakey/master/screenshots/rotten03.png">
+	<img alt="rotten04" src="https://raw.githubusercontent.com/pan-troglodytes/snakey/master/screenshots/rotten04.png">
+	<img alt="rotten05" src="https://raw.githubusercontent.com/pan-troglodytes/snakey/master/screenshots/rotten05.png">
+</p>
