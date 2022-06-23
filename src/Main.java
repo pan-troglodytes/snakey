@@ -12,14 +12,22 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        int col = 15;
+        int row = 15;
+        for (int i=0; i < args.length; i++) {
+            if (args[i].equals("--col")) {
+                col = Integer.parseInt(args[i+1]);
+            } else if (args[i].equals("--row")) {
+                row = Integer.parseInt(args[i+1]);
+            }
+        }
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setSize(500,500);
         window.setTitle("snake");
         window.setLocationRelativeTo(null);
         window.setVisible(true);
         window.setResizable(false);
-        GamePanel gamePanel = new GamePanel(15, 15, 16, 4);
+        GamePanel gamePanel = new GamePanel(col, row, 16, 2);
         window.add(gamePanel);
         window.pack();
     }

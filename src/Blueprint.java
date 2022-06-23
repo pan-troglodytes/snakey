@@ -11,11 +11,14 @@ import java.util.ArrayList;
 
 public class Blueprint {
     ArrayList<ArrayList<ArrayList<Item>>> xy = new ArrayList<>();
+    int col, row;
 
-    Blueprint(int maxScreenCol, int maxScreenRow) {
-       for (int i=0; i < maxScreenCol; i++) {
+    Blueprint(int col, int row) {
+        this.col = col;
+        this.row = row;
+       for (int i=0; i < col; i++) {
            xy.add(new ArrayList<>());
-           for (int j=0; j < maxScreenRow; j++) {
+           for (int j=0; j < row; j++) {
                xy.get(i).add(new ArrayList<>());
            }
        }
@@ -31,15 +34,16 @@ public class Blueprint {
     }
 
     public ArrayList<Item> getCoords(int x, int y) {
-        if (x > xy.size() -1 || x < 0 || y > xy.size() -1 || y < 0) {
+        if (x > xy.size() -1 || x < 0 || y > xy.get(0).size() -1 || y < 0) {
             return null;
         }
         return xy.get(x).get(y);
     }
 
-    public void print() {
-        for (int i=0; i < xy.size(); i++) {
-            System.out.println(xy.get(i));
-        }
+    public int getCol() {
+        return col;
+    }
+    public int getRow() {
+        return row;
     }
 }

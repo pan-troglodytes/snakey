@@ -39,15 +39,15 @@ public class GamePanel extends JPanel implements ActionListener {
         this.map = new Blueprint(col, row);
         ItemSpawner.setBlueprint(map);
         Item.setBlueprint(map);
-        this.snakes.add(new Snake(new KeyHandler(KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K), 4, 150,3,3, null, map));
+        this.snakes.add(new Snake(new KeyHandler(KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K), 4, 100,0,0, null, map));
         //this.snakes.add(new Snake(new KeyHandler(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D), 4, 150,3,3, null, map));
         this.itemSpawners.add(new ItemSpawner(Apple.class, 0, 0, col-1, row-1, 3, 1000));
         this.itemSpawners.add(new ItemSpawner(Banana.class, 0, 0, col-1, row-1, 1, 3000));
         Portal p = new Portal(null);
         Portal p1 = new Portal(null);
         p.linkPair(p1);
-        p.setPosition(5, 5);
-        p1.setPosition(col-5, row-5);
+        p.setPosition((int) (col * .1), (int) (row * .1));
+        p1.setPosition((int) (col * .9), (int) (row * .9));
         p1.setColor(new Color(255, 151, 0));
         this.itemOrphans.add(p);
         this.itemOrphans.add(p1);

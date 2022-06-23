@@ -185,6 +185,7 @@ public class Snake extends Item implements  ActionListener {
                         drawWith = bodyLR;
                     }
 
+                    // corners are determined by segment direction, so that they work properly when disjointed kkby portals
                     // if the previous segment is facing the right and the current segment is facing down
                     // OR
                     // the previous segment is facing up and the current segment is facing the left
