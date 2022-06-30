@@ -24,7 +24,7 @@ public class Snake extends Item implements  ActionListener {
     Image headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
     ArrayList<Character> d = new ArrayList<>();
 
-    Snake(KeyHandler keyHandler, int startingSize, int delay, int x, int y, ItemSpawner spawner, Blueprint map) throws IOException {
+    Snake(KeyHandler keyHandler, int startingSize, int delay, int x, int y, ItemSpawner spawner) throws IOException {
         super(spawner);
         this.keyHandler = keyHandler;
         this.xStart = x;

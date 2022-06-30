@@ -8,9 +8,16 @@
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main {
+    static ArrayList<Item> orphans = new ArrayList<>();
+    static ArrayList<ItemSpawner> spawners = new ArrayList<>();
+    static Blueprint map;
+
     public static void main(String[] args) throws IOException {
         int col = 15;
         int row = 15;
@@ -27,7 +34,22 @@ public class Main {
         window.setLocationRelativeTo(null);
         window.setVisible(true);
         window.setResizable(false);
-        GamePanel gamePanel = new GamePanel(col, row, 16, 2);
+
+        map = new Blueprint(col, row);
+        Item.setBlueprint(map);
+        ItemSpawner.setBlueprint(map);
+        orphans.add(new Snake(new KeyHandler(KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K), 4, (int) (Math.log10((map.getCol() + map.getRow()))*100) ,0,0, null));
+        spawners.add(new ItemSpawner(Apple.class, 0, 0, col-1, row-1, 3, 1000));
+        spawners.add(new ItemSpawner(Banana.class, 0, 0, col-1, row-1, 1, 3000));
+        Portal p = new Portal(null);
+        Portal p1 = new Portal(null);
+        p.linkPair(p1);
+        p.setPosition((int) (col * .1), (int) (row * .1));
+        p1.setPosition((int) (col * .9), (int) (row * .9));
+        p1.setColor(new Color(255, 151, 0));
+        orphans.add(p);
+        orphans.add(p1);
+        GamePanel gamePanel = new GamePanel(col, row, 16, 2, map, spawners, orphans);
         window.add(gamePanel);
         window.pack();
     }

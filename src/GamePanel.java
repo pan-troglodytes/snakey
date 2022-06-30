@@ -7,6 +7,8 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
+import com.sun.jdi.ArrayReference;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -25,10 +27,9 @@ public class GamePanel extends JPanel implements ActionListener {
     final int height;
     Blueprint map;
     ArrayList<ItemSpawner> itemSpawners = new ArrayList<>();
-    ArrayList<Snake> snakes = new ArrayList<>();
     ArrayList<Item> itemOrphans = new ArrayList<>();
 
-    public GamePanel(int col, int row, int resolution, int scale) throws IOException {
+    public GamePanel(int col, int row, int resolution, int scale, Blueprint map, ArrayList<ItemSpawner> spawners, ArrayList<Item> orphans) throws IOException {
         this.resolution = resolution;
         this.scale = scale;
         this.tileSize = resolution * scale;
@@ -36,26 +37,16 @@ public class GamePanel extends JPanel implements ActionListener {
         this.row = row;
         this.width = col * tileSize;
         this.height = row * tileSize;
-        this.map = new Blueprint(col, row);
-        ItemSpawner.setBlueprint(map);
-        Item.setBlueprint(map);
-        this.snakes.add(new Snake(new KeyHandler(KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K), 4, 100,0,0, null, map));
-        //this.snakes.add(new Snake(new KeyHandler(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D), 4, 150,3,3, null, map));
-        this.itemSpawners.add(new ItemSpawner(Apple.class, 0, 0, col-1, row-1, 3, 1000));
-        this.itemSpawners.add(new ItemSpawner(Banana.class, 0, 0, col-1, row-1, 1, 3000));
-        Portal p = new Portal(null);
-        Portal p1 = new Portal(null);
-        p.linkPair(p1);
-        p.setPosition((int) (col * .1), (int) (row * .1));
-        p1.setPosition((int) (col * .9), (int) (row * .9));
-        p1.setColor(new Color(255, 151, 0));
-        this.itemOrphans.add(p);
-        this.itemOrphans.add(p1);
+        this.map = map;
+        this.itemOrphans = orphans;
+        this.itemSpawners = spawners;
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
-        for (Snake snake : snakes) {
-            this.addKeyListener(snake.getSnakeControls());
+        for (Item item : itemOrphans) {
+            if (item.getClass() == Snake.class) {
+                this.addKeyListener(((Snake) item).getSnakeControls());
+            }
         }
         this.setFocusable(true);
         new Timer(100,this).start();
@@ -68,9 +59,6 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (Snake snake : snakes) {
-            snake.draw(g, tileSize);
-        }
         for (ItemSpawner itemSpawner : itemSpawners) {
             itemSpawner.drawItems(g, tileSize);
         }
