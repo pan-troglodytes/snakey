@@ -17,6 +17,7 @@ public class Main {
     static ArrayList<Item> orphans = new ArrayList<>();
     static ArrayList<ItemSpawner> spawners = new ArrayList<>();
     static Blueprint map;
+    static boolean server = false;
 
     public static void main(String[] args) throws IOException {
         int col = 15;
@@ -26,31 +27,41 @@ public class Main {
                 col = Integer.parseInt(args[i+1]);
             } else if (args[i].equals("--row")) {
                 row = Integer.parseInt(args[i+1]);
+            } else if (args[i].equals("--server")) {
+                server = true;
             }
         }
-        JFrame window = new JFrame();
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setTitle("snake");
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
-        window.setResizable(false);
 
-        map = new Blueprint(col, row);
-        Item.setBlueprint(map);
-        ItemSpawner.setBlueprint(map);
-        orphans.add(new Snake(new KeyHandler(KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K), 4, (int) (Math.log10((map.getCol() + map.getRow()))*100) ,0,0, null));
-        spawners.add(new ItemSpawner(Apple.class, 0, 0, col-1, row-1, 3, 1000));
-        spawners.add(new ItemSpawner(Banana.class, 0, 0, col-1, row-1, 1, 3000));
-        Portal p = new Portal(null);
-        Portal p1 = new Portal(null);
-        p.linkPair(p1);
-        p.setPosition((int) (col * .1), (int) (row * .1));
-        p1.setPosition((int) (col * .9), (int) (row * .9));
-        p1.setColor(new Color(255, 151, 0));
-        orphans.add(p);
-        orphans.add(p1);
-        GamePanel gamePanel = new GamePanel(col, row, 16, 2, map, spawners, orphans);
-        window.add(gamePanel);
-        window.pack();
+        if (server) {
+            Server s = new Server();
+            System.out.println("make server");
+
+        } else {
+            JFrame window = new JFrame();
+            window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            window.setTitle("snake");
+            window.setLocationRelativeTo(null);
+            window.setVisible(true);
+            window.setResizable(false);
+            Client c = new Client("127.0.0.1",61529, col, row);
+            map = new Blueprint(col, row, c);
+            Item.setBlueprint(map);
+            ItemSpawner.setBlueprint(map);
+            orphans.add(new Snake(new KeyHandler(KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K), 4, (int) (Math.log10((map.getCol() + map.getRow()))*100) ,0,0, null));
+            spawners.add(new ItemSpawner(Apple.class, 0, 0, col-1, row-1, 3, 1000));
+            spawners.add(new ItemSpawner(Banana.class, 0, 0, col-1, row-1, 1, 3000));
+            Portal p = new Portal(null);
+            Portal p1 = new Portal(null);
+            p.linkPair(p1);
+            p.setPosition((int) (col * .1), (int) (row * .1));
+            p1.setPosition((int) (col * .9), (int) (row * .9));
+            p1.setColor(new Color(255, 151, 0));
+            orphans.add(p);
+            orphans.add(p1);
+            GamePanel gamePanel = new GamePanel(col, row, 16, 2, map, spawners, orphans);
+            window.add(gamePanel);
+            window.pack();
+        }
+
     }
 }

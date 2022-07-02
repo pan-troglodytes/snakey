@@ -10,12 +10,14 @@
 import java.util.ArrayList;
 
 public class Blueprint {
+    static Client c;
     ArrayList<ArrayList<ArrayList<Item>>> xy = new ArrayList<>();
     int col, row;
 
-    Blueprint(int col, int row) {
+    Blueprint(int col, int row, Client client) {
         this.col = col;
         this.row = row;
+        c = client;
        for (int i=0; i < col; i++) {
            xy.add(new ArrayList<>());
            for (int j=0; j < row; j++) {
@@ -23,14 +25,17 @@ public class Blueprint {
            }
        }
     }
+
     public void setCoords(int x, int y, Item item) {
         if (!xy.get(x).get(y).contains(item)) {
             xy.get(x).get(y).add(item);
         }
+        c.sendCoords("+", x, y);
     }
 
     public void removeCoords(int x, int y, Item item) {
         xy.get(x).get(y).remove(item);
+        c.sendCoords("-", x, y);
     }
 
     public ArrayList<Item> getCoords(int x, int y) {
