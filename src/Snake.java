@@ -14,17 +14,17 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Snake extends Item implements  ActionListener {
+public class Snake extends Item implements ActionListener {
 
     int xStart;
     int yStart;
     int sizeStart;
     char direction = 'r';
     KeyHandler keyHandler;
-    Image headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
     ArrayList<Character> d = new ArrayList<>();
+    transient Image headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
 
-    Snake(KeyHandler keyHandler, int startingSize, int delay, int x, int y, ItemSpawner spawner) throws IOException {
+    public Snake(KeyHandler keyHandler, int startingSize, int delay, int x, int y, ItemSpawner spawner) throws IOException {
         super(spawner);
         this.keyHandler = keyHandler;
         this.xStart = x;
@@ -96,6 +96,7 @@ public class Snake extends Item implements  ActionListener {
 
     public void observe() {
         ArrayList<Item> collisions = map.getCoords(x.get(0), y.get(0));
+        System.out.println(collisions);
         if (collisions == null ){
             die();
         } else {
@@ -108,6 +109,7 @@ public class Snake extends Item implements  ActionListener {
                 }
             }
         }
+
     }
 
     @Override

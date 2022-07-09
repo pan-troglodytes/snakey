@@ -7,9 +7,11 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Blueprint {
+public class Blueprint  implements Serializable {
     static Client c;
     ArrayList<ArrayList<ArrayList<Item>>> xy = new ArrayList<>();
     int col, row;
@@ -27,22 +29,46 @@ public class Blueprint {
     }
 
     public void setCoords(int x, int y, Item item) {
-        if (!xy.get(x).get(y).contains(item)) {
-            xy.get(x).get(y).add(item);
+        try {
+            if (!xy.get(x).get(y).contains(item)) {
+                xy.get(x).get(y).add(item);
+            }
+
+
+            c.sendCoords("+", x, y, item);
+        } catch (IOException | ClassNotFoundException ex) {
+            System.out.println(new RuntimeException(ex));
         }
-        c.sendCoords("+", x, y);
-    }
+}
 
     public void removeCoords(int x, int y, Item item) {
-        xy.get(x).get(y).remove(item);
-        c.sendCoords("-", x, y);
+        try {
+            xy.get(x).get(y).remove(item);
+            c.sendCoords("-", x, y, item);
+        } catch (IOException | ClassNotFoundException ex) {
+            System.out.println(new RuntimeException(ex));
+        }
     }
 
+    /*
     public ArrayList<Item> getCoords(int x, int y) {
         if (x > xy.size() -1 || x < 0 || y > xy.get(0).size() -1 || y < 0) {
             return null;
         }
         return xy.get(x).get(y);
+    }*/
+    public ArrayList<Item> getCoords(int x, int y) {
+        try {
+
+            if (x > xy.size() -1 || x < 0 || y > xy.get(0).size() -1 || y < 0) {
+                return null;
+            }
+            return c.sendCoords("get", x, y, null);
+
+        }  catch (IOException | ClassNotFoundException ex) {
+            System.out.println(new RuntimeException(ex));
+        }
+        return new ArrayList<Item>();
     }
 
     public int getCol() {

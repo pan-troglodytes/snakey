@@ -9,9 +9,10 @@
  */
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.Serializable;
 
 
-public class KeyHandler extends KeyAdapter {
+public class KeyHandler extends KeyAdapter implements Serializable {
 
     int up, down, left, right;
 

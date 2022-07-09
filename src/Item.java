@@ -8,18 +8,20 @@
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Item {
+public abstract class Item implements Serializable{
     int value = 0;
     ArrayList<Integer> x = new ArrayList<>();
     ArrayList<Integer> y = new ArrayList<>();
     Color color;
+    ItemSpawner spawner;
     static Blueprint map;
-     ItemSpawner spawner;
     static void setBlueprint(Blueprint b) {
         map = b;
     }
+
 
     public Item(ItemSpawner spawner) {
         this.spawner = spawner;
@@ -44,7 +46,7 @@ public abstract class Item {
     public void setPosition(int x, int y) {
         this.x.set(0,x);
         this.y.set(0,y);
-        map.setCoords(x, y, this);
+        //map.setCoords(x, y, this);
     }
 
     public void die() {

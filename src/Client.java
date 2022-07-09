@@ -1,22 +1,30 @@
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
-public class Client {
+public class Client  implements Serializable{
 	Socket s;
-	PrintStream ps;
+	ObjectOutputStream os;
+	ObjectInputStream is;
 
-	public Client(String ip, int port, int col, int row) throws IOException {
+
+	public Client(String ip, int port) throws IOException {
 		s = new Socket(ip, port);
-		ps = new PrintStream(s.getOutputStream());
-		ps.println("create:"+col+":"+row);
-		ps.flush();
-		ps.println("create:"+col+":"+row);
-		ps.flush();
+		os = new ObjectOutputStream(s.getOutputStream());
+		is = new ObjectInputStream(s.getInputStream());
 	}
 
-	public void sendCoords(String action, int x, int y) {
-		ps.println(action+":"+x+":"+y);
-		ps.flush();
+	public ArrayList<Item> sendCoords(String action, int x, int y, Item item) throws IOException, ClassNotFoundException {
+		Packet packSend = new Packet(x, y, action, item, null);
+		System.out.println(packSend.action);
+		os.writeObject(packSend);
+
+		if (action.equals("get")) {
+			ArrayList<Item> packRecv = (ArrayList<Item>) is.readObject();
+			if (packRecv != null) {
+				return packRecv;
+			}
+		}
+		return null;
 	}
 }
