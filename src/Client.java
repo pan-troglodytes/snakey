@@ -1,30 +1,54 @@
 import java.io.*;
-import java.net.Socket;
-import java.util.ArrayList;
+import java.net.*;
 
-public class Client  implements Serializable{
-	Socket s;
-	ObjectOutputStream os;
-	ObjectInputStream is;
+public class Client extends Thread {
+	InetAddress ip;
+	DatagramSocket s;
+	int port;
 
 
-	public Client(String ip, int port) throws IOException {
-		s = new Socket(ip, port);
-		os = new ObjectOutputStream(s.getOutputStream());
-		is = new ObjectInputStream(s.getInputStream());
+	public Client(String ip, int port) {
+		this.port = port;
+		try {
+			s = new DatagramSocket();
+			this.ip = InetAddress.getByName(ip);
+		} catch (SocketException | UnknownHostException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	public ArrayList<Item> sendCoords(String action, int x, int y, Item item) throws IOException, ClassNotFoundException {
-		Packet packSend = new Packet(x, y, action, item, null);
-		System.out.println(packSend.action);
-		os.writeObject(packSend);
+	public void run() {
+		while (true) {
 
-		if (action.equals("get")) {
-			ArrayList<Item> packRecv = (ArrayList<Item>) is.readObject();
-			if (packRecv != null) {
-				return packRecv;
+			// recieve data
+			byte[] data = new byte[1024];
+			DatagramPacket packet = new DatagramPacket(data, data.length);
+			try {
+				s.receive(packet);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
 			}
+			String msg = new String(packet.getData());
+			System.out.println("server: " + msg);
 		}
-		return null;
+	}
+
+	public void sendPacket(Packet packet) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			 ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+			oos.writeObject(packet);
+			sendData(baos.toByteArray());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void sendData(byte[] data) {
+		DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
+		try {
+			s.send(packet);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

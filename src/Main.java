@@ -19,7 +19,7 @@ public class Main {
     static Blueprint map;
     static boolean server = false;
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException {
         int col = 15;
         int row = 15;
         for (int i=0; i < args.length; i++) {
@@ -36,6 +36,7 @@ public class Main {
         if (server) {
             System.out.println("make server");
             Server s = new Server(col, row);
+            s.start();
 
         } else {
             JFrame window = new JFrame();
@@ -45,9 +46,11 @@ public class Main {
             window.setVisible(true);
             window.setResizable(false);
             Client c = new Client("127.0.0.1",61529);
+            c.start();
             map = new Blueprint(col, row, c);
             Item.setBlueprint(map); ItemSpawner.setBlueprint(map);
             orphans.add(new Snake(new KeyHandler(KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K), 9, (int) (Math.log10((map.getCol() + map.getRow()))*100) ,0,0, null));
+            //c.sendItem(orphans.get(0));
             //spawners.add(new ItemSpawner(Apple.class, 0, 0, col-1, row-1, 3, 1000));
             //spawners.add(new ItemSpawner(Banana.class, 0, 0, col-1, row-1, 1, 3000));
             //Portal p = new Portal(null);

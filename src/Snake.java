@@ -96,7 +96,6 @@ public class Snake extends Item implements ActionListener {
 
     public void observe() {
         ArrayList<Item> collisions = map.getCoords(x.get(0), y.get(0));
-        System.out.println(collisions);
         if (collisions == null ){
             die();
         } else {
@@ -109,7 +108,6 @@ public class Snake extends Item implements ActionListener {
                 }
             }
         }
-
     }
 
     @Override
