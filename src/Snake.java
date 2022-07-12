@@ -7,10 +7,12 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -21,7 +23,7 @@ public class Snake extends Item implements  ActionListener {
     int sizeStart;
     char direction = 'r';
     KeyHandler keyHandler;
-    Image headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
+    BufferedImage headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
     ArrayList<Character> d = new ArrayList<>();
 
     Snake(KeyHandler keyHandler, int startingSize, int delay, int x, int y, ItemSpawner spawner) throws IOException {
@@ -35,26 +37,26 @@ public class Snake extends Item implements  ActionListener {
             d.add(direction);
         }
 
-        headL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-l.png"));
-        headR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-r.png"));
-        headU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-u.png"));
-        headD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-d.png"));
-        bodyLR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-lr.png"));
-        bodyUD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-ud.png"));
-        cornerUR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-ur.png"));
-        cornerRD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-rd.png"));
-        cornerDL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-dl.png"));
-        cornerLU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-lu.png"));
-        tailU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-u.png"));
-        tailD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-d.png"));
-        tailL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-l.png"));
-        tailR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-r.png"));
-        beheadD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-behead-d.png"));
-        beheadL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-behead-l.png"));
-        beheadR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-behead-r.png"));
-        beheadU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-behead-u.png"));
+        headL = ImageIO.read(getClass().getResource("sprites/snake-head-l.png"));
+        headR = ImageIO.read(getClass().getResource("sprites/snake-head-r.png"));
+        headU = ImageIO.read(getClass().getResource("sprites/snake-head-u.png"));
+        headD = ImageIO.read(getClass().getResource("sprites/snake-head-d.png"));
+        bodyLR = ImageIO.read(getClass().getResource("sprites/snake-body-lr.png"));
+        bodyUD = ImageIO.read(getClass().getResource("sprites/snake-body-ud.png"));
+        cornerUR = ImageIO.read(getClass().getResource("sprites/snake-body-corner-ur.png"));
+        cornerRD = ImageIO.read(getClass().getResource("sprites/snake-body-corner-rd.png"));
+        cornerDL = ImageIO.read(getClass().getResource("sprites/snake-body-corner-dl.png"));
+        cornerLU = ImageIO.read(getClass().getResource("sprites/snake-body-corner-lu.png"));
+        tailU = ImageIO.read(getClass().getResource("sprites/snake-tail-u.png"));
+        tailD = ImageIO.read(getClass().getResource("sprites/snake-tail-d.png"));
+        tailL = ImageIO.read(getClass().getResource("sprites/snake-tail-l.png"));
+        tailR = ImageIO.read(getClass().getResource("sprites/snake-tail-r.png"));
+        beheadD = ImageIO.read(getClass().getResource("sprites/snake-behead-d.png"));
+        beheadL = ImageIO.read(getClass().getResource("sprites/snake-behead-l.png"));
+        beheadR = ImageIO.read(getClass().getResource("sprites/snake-behead-r.png"));
+        beheadU = ImageIO.read(getClass().getResource("sprites/snake-behead-u.png"));
 
-        color = new Color(0,255,0);
+
         this.sizeStart = startingSize;
         this.value = startingSize;
         Timer timer = new Timer(delay,this);
@@ -135,54 +137,54 @@ public class Snake extends Item implements  ActionListener {
     @Override
     public void draw(Graphics g, int tileSize) {
         for (int i = 0; i < value; i++ ) {
-            Image drawWith = null; 
+            sprite = null;
                 if (i == 0) {
                     if (value == 1) {
                         if (direction == 'l') {
-                            drawWith = beheadL;
+                            sprite = beheadL;
                         } else if (direction == 'd') {
-                            drawWith = beheadD;
+                            sprite = beheadD;
                         } else if (direction == 'u') {
-                            drawWith = beheadU;
+                            sprite = beheadU;
                         } else if (direction == 'r') {
-                            drawWith = beheadR;
+                            sprite = beheadR;
                         }
                     } else {
                         if (direction == 'l') {
-                            drawWith = headL;
+                            sprite = headL;
                         } else if (direction == 'd') {
-                            drawWith = headD;
+                            sprite = headD;
                         } else if (direction == 'u') {
-                            drawWith = headU;
+                            sprite = headU;
                         } else if (direction == 'r') {
-                            drawWith = headR;
+                            sprite = headR;
                         }
                     }
                 } else if (i == value -1 ) {
                     for (int j=i; j >= 0; j--) {
                         if (x.get(j) != x.get(i) || y.get(j) != y.get(i)) {
                             if (y.get(j) < y.get(i) && x.get(j) == x.get(i)) {
-                                drawWith = tailU;
+                                sprite = tailU;
                             }
                             if (y.get(j) > y.get(i) && x.get(j) == x.get(i)) {
-                                drawWith = tailD;
+                                sprite = tailD;
                             }
                             if (x.get(j) < x.get(i) && y.get(j) == y.get(i)) {
-                                drawWith = tailL;
+                                sprite = tailL;
                             }
                             if (x.get(j) > x.get(i) && y.get(j) == y.get(i)) {
-                                drawWith = tailR;
+                                sprite = tailR;
                             }
                             break;
                         }
                     }
                 } else {
                     if (x.get(i) == x.get(i - 1) && y.get(i) != y.get(i-1)  && y.get(i) != y.get(i+1) || x.get(i) == x.get(i + 1) && y.get(i) != y.get(i+1)  && y.get(i) != y.get(i-1) ) {
-                        drawWith = bodyUD;
+                        sprite = bodyUD;
                     }
 
                     if (y.get(i) == y.get(i - 1) && x.get(i) != x.get(i-1) && x.get(i) != x.get(i+1) || y.get(i) == y.get(i + 1) && x.get(i) != x.get(i+1) && x.get(i) != x.get(i-1)) {
-                        drawWith = bodyLR;
+                        sprite = bodyLR;
                     }
 
                     // corners are determined by segment direction, so that they work properly when disjointed kkby portals
@@ -190,19 +192,19 @@ public class Snake extends Item implements  ActionListener {
                     // OR
                     // the previous segment is facing up and the current segment is facing the left
                     if (d.get(i+1) == 'r' && d.get(i) == 'd' || d.get(i+1) == 'u' && d.get(i) == 'l') {
-                        drawWith = cornerDL;
+                        sprite = cornerDL;
                     }
                     if (d.get(i+1) == 'l' && d.get(i) == 'u' || d.get(i+1) == 'd' && d.get(i) == 'r') {
-                        drawWith = cornerUR;
+                        sprite = cornerUR;
                     }
                     if (d.get(i+1) == 'l' && d.get(i) == 'd' || d.get(i+1) == 'u' && d.get(i) == 'r') {
-                        drawWith = cornerRD;
+                        sprite = cornerRD;
                     }
                     if (d.get(i+1) == 'r' && d.get(i) == 'u' || d.get(i+1) == 'd' && d.get(i) == 'l') {
-                        drawWith = cornerLU;
+                        sprite = cornerLU;
                     }
             }
-            g.drawImage(drawWith, x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize, null);
+            g.drawImage(sprite, x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize, null);
         }
     }
 

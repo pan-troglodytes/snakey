@@ -7,7 +7,8 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
-import java.awt.*;
+import javax.imageio.ImageIO;
+import java.io.IOException;
 
 public class Portal extends Item {
     protected Portal pair;
@@ -16,7 +17,11 @@ public class Portal extends Item {
         super(spawner);
         x.add(0);
         y.add(0);
-        color = new Color(0, 255, 226);
+        try {
+            sprite = ImageIO.read(getClass().getResource("sprites/portal-blue.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void linkPair(Portal p) {
@@ -31,14 +36,6 @@ public class Portal extends Item {
         return pair;
     }
 
-    public void draw(Graphics g, int tileSize) {
-        for (Integer i:x) {
-            for (Integer j:y) {
-                g.setColor(color);
-                g.fillOval(i * tileSize, j * tileSize, (int) (tileSize * .75), tileSize);
-            }
-        }
-    }
 
     public void interact(Item interactee) {
         if (interactee.getClass() == Snake.class) {

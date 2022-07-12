@@ -8,7 +8,6 @@
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,10 +45,11 @@ public class Main {
         p.linkPair(p1);
         p.setPosition((int) (col * .1), (int) (row * .1));
         p1.setPosition((int) (col * .9), (int) (row * .9));
-        p1.setColor(new Color(255, 151, 0));
+        p1.setSprite("sprites/portal-orange.png");
         orphans.add(p);
         orphans.add(p1);
         GamePanel gamePanel = new GamePanel(col, row, 16, 2, map, spawners, orphans);
+        window.addKeyListener(((Snake)orphans.get(0)).getSnakeControls());
         window.add(gamePanel);
         window.pack();
     }

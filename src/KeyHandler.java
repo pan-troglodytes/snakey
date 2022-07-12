@@ -7,13 +7,14 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 
-public class KeyHandler extends KeyAdapter {
+public class KeyHandler implements KeyListener {
 
     int up, down, left, right;
+    public char directionNew = 'd';
 
     KeyHandler(int up, int down, int left, int right) {
         this.up = up;
@@ -21,11 +22,9 @@ public class KeyHandler extends KeyAdapter {
         this.left = left;
         this.right = right;
     }
-    public char directionNew = 'd';
 
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
@@ -44,11 +43,9 @@ public class KeyHandler extends KeyAdapter {
         if (keycode == right) {
             directionNew = 'r';
         }
-
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-
     }
 }

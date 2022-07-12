@@ -7,8 +7,9 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
+import java.io.IOException;
 
 public class Banana extends Fruit {
 
@@ -16,7 +17,12 @@ public class Banana extends Fruit {
 		super(spawner);
 		this.value = 3;
 		new Timer((map.getCol() + map.getRow()) * 75, this).start();
-		color = new Color(255, 215, 0);
-		colorRotten = new Color(111, 75, 4);
+		try {
+			sprite = ImageIO.read(getClass().getResource("sprites/banana.png"));
+			rot = ImageIO.read(getClass().getResource("sprites/banana-rotten.png"));
+
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

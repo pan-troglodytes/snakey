@@ -13,7 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -43,13 +42,9 @@ public class GamePanel extends JPanel implements ActionListener {
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
-        for (Item item : itemOrphans) {
-            if (item.getClass() == Snake.class) {
-                this.addKeyListener(((Snake) item).getSnakeControls());
-            }
-        }
+
         this.setFocusable(true);
-        new Timer(100,this).start();
+        new Timer(30,this).start();
     }
 
     @Override

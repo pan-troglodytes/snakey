@@ -7,14 +7,17 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public abstract class Item {
     int value = 0;
     ArrayList<Integer> x = new ArrayList<>();
     ArrayList<Integer> y = new ArrayList<>();
-    Color color;
+    BufferedImage sprite;
     static Blueprint map;
      ItemSpawner spawner;
     static void setBlueprint(Blueprint b) {
@@ -26,12 +29,7 @@ public abstract class Item {
     };
 
     public void draw(Graphics g, int tileSize) {
-        for (Integer i:x) {
-            for (Integer j:y) {
-                g.setColor(color);
-                g.fillRect(i * tileSize, j * tileSize, tileSize, tileSize);
-            }
-        }
+        g.drawImage(sprite, x.get(0) * tileSize, y.get(0) * tileSize, tileSize, tileSize, null);
     }
 
     public void interact(Item interactee) {
@@ -61,7 +59,11 @@ public abstract class Item {
         return new int[] {x.get(0), y.get(0)};
     }
 
-    public void setColor(Color c) {
-        this.color = c;
+    public void setSprite(String path) {
+        try {
+            sprite = ImageIO.read(getClass().getResource(path));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

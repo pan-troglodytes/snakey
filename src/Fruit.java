@@ -7,13 +7,14 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 public abstract class Fruit extends Item implements ActionListener {
 	boolean rotten = false;
-	Color colorRotten;
+	BufferedImage rot;
+
 	public Fruit(ItemSpawner spawner) {
 		super(spawner);
 		x.add(0);
@@ -24,7 +25,7 @@ public abstract class Fruit extends Item implements ActionListener {
 	public void actionPerformed(ActionEvent actionEvent) {
 		if (!rotten) {
 			value = -value;
-			color= colorRotten;
+			sprite =rot;
 			rotten = true;
 		} else {
 			die();
