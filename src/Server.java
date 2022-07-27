@@ -1,46 +1,85 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class Server extends Thread {
 	DatagramSocket s;
-	public Server(int col, int row) {
+	ArrayList<Item> items = new ArrayList<>();
+	ArrayList<Item> orphans;
+	ArrayList<ItemSpawner> spawners;
+	int col, row;
+	public Server(int col, int row, ArrayList<Item> orphans, ArrayList<ItemSpawner> spawners) {
 		try {
 			s = new DatagramSocket(61529);
 		} catch (SocketException e) {
 			throw new RuntimeException(e);
 		}
+		this.orphans = orphans;
+		this.spawners = spawners;
+		this.col = col;
+		this.row = row;
 	}
 
 	public void run () {
 		while (true) {
-			byte[] data = new byte[1024];
-			DatagramPacket packet = new DatagramPacket(data, data.length);
+			byte[] data = new byte[40500];
+			DatagramPacket dpr = new DatagramPacket(data, data.length);
 			try {
-				s.receive(packet);
+				s.receive(dpr);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-			try(ByteArrayInputStream b = new ByteArrayInputStream(packet.getData())){
-				try(ObjectInputStream o = new ObjectInputStream(b)){
-					Packet item = (Packet) o.readObject();
-					System.out.println(item);
+			try(ByteArrayInputStream bais = new ByteArrayInputStream(dpr.getData())) {
+				try(ObjectInputStream ois = new ObjectInputStream(bais)) {
+					Packet packetRec = (Packet) ois.readObject();
+					Item item = packetRec.items.get(0);
+					if (item instanceof Snake && item.x.get(0) > row -1|| item.x.get(0) < 0 || item.y.get(0) > col -1|| item.y.get(0) < 0) {
+						item.die();
+					}
+					addItem(item);
 				} catch (ClassNotFoundException e) {
 					throw new RuntimeException(e);
 				}
 			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			for (Item orphan : orphans) {
+				addItem(orphan);
+			}
+			if (items != null) {
+				for (int i=0; i < items.size(); i++) {
+					for (int j=0; j < items.size(); j++) {
+						for (int k = 0; k < items.get(j).x.size(); k++) {
+							if (items.get(i) instanceof Snake && !(items.get(j).equals(items.get(i)) && k == 0) && items.get(i).x.get(0).equals(items.get(j).x.get(k)) && items.get(i).y.get(0).equals(items.get(j).y.get(k))) {
+								((Snake) items.get(i)).observe(items.get(j));
+								System.out.println(items.get(i).value);
+
+							}
+						}
+					}
+				}
+			}
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				 ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+				Packet packetSend = new Packet(items);
+				oos.writeObject(packetSend);
+				DatagramPacket dps = new DatagramPacket(baos.toByteArray(), baos.toByteArray().length, dpr.getAddress(), dpr.getPort());
+				s.send(dps);
+			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-
 		}
 	}
 
-	public void sendData(byte[] data, InetAddress ip, int port) {
-		DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
-		try {
-			s.send(packet);
-		} catch (IOException e) {
-			e.printStackTrace();
+	public void addItem(Item item) {
+		if (items.contains(item)) {
+			for (int i=0; i < items.size(); i++) {
+				if (items.get(i).equals(item)) {
+					items.set(i, item);
+				}
+			}
+		} else {
+			items.add(item);
 		}
-
 	}
 }

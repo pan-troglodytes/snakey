@@ -1,10 +1,13 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class Client extends Thread {
 	InetAddress ip;
 	DatagramSocket s;
 	int port;
+	ArrayList<Item> items = new ArrayList<>();
+	Packet rec;
 
 
 	public Client(String ip, int port) {
@@ -19,36 +22,47 @@ public class Client extends Thread {
 
 	public void run() {
 		while (true) {
-
-			// recieve data
-			byte[] data = new byte[1024];
+			byte[] data = new byte[102400];
 			DatagramPacket packet = new DatagramPacket(data, data.length);
 			try {
 				s.receive(packet);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-			String msg = new String(packet.getData());
-			System.out.println("server: " + msg);
+			try(ByteArrayInputStream b = new ByteArrayInputStream(packet.getData())){
+				try(ObjectInputStream o = new ObjectInputStream(b)){
+					Packet packetRec = (Packet) o.readObject();
+					rec = packetRec;
+
+				} catch (ClassNotFoundException e) {
+					throw new RuntimeException(e);
+				}
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
-	public void sendPacket(Packet packet) {
+	public void sendItem(Item item) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			 ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-			oos.writeObject(packet);
-			sendData(baos.toByteArray());
+			items.add(item);
+			Packet p = new Packet(items);
+			oos.writeObject(p);
+			DatagramPacket packetSend = new DatagramPacket(baos.toByteArray(), baos.toByteArray().length, ip, port);
+			s.send(packetSend);
+			oos.flush();
+			baos.flush();
+			items = new ArrayList<>();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public void sendData(byte[] data) {
-		DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
-		try {
-			s.send(packet);
-		} catch (IOException e) {
-			e.printStackTrace();
+	public ArrayList<Item> getItems() {
+		if (rec == null) {
+			return null;
 		}
+		return rec.items;
 	}
 }

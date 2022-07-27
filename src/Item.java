@@ -11,8 +11,10 @@ import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Item implements Serializable{
+public abstract class Item implements Serializable, Runnable{
     int value = 0;
+    String id = this.getClass().getName() + "@" + Integer.toHexString(this.hashCode());
+
     ArrayList<Integer> x = new ArrayList<>();
     ArrayList<Integer> y = new ArrayList<>();
     Color color;
@@ -36,6 +38,12 @@ public abstract class Item implements Serializable{
         }
     }
 
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
     public void interact(Item interactee) {
     }
 
@@ -46,7 +54,6 @@ public abstract class Item implements Serializable{
     public void setPosition(int x, int y) {
         this.x.set(0,x);
         this.y.set(0,y);
-        //map.setCoords(x, y, this);
     }
 
     public void die() {
@@ -65,5 +72,15 @@ public abstract class Item implements Serializable{
 
     public void setColor(Color c) {
         this.color = c;
+    }
+
+
+
+    public boolean equals(Object o) {
+        return o instanceof Item && getId().equals(((Item) o).getId());
+    }
+
+    @Override
+    public void run() {
     }
 }

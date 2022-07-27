@@ -7,14 +7,13 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Snake extends Item implements ActionListener {
+public class Snake extends Item {
 
     int xStart;
     int yStart;
@@ -22,51 +21,68 @@ public class Snake extends Item implements ActionListener {
     char direction = 'r';
     KeyHandler keyHandler;
     ArrayList<Character> d = new ArrayList<>();
-    transient Image headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
+    ImageIcon headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
+    static Client c;
 
-    public Snake(KeyHandler keyHandler, int startingSize, int delay, int x, int y, ItemSpawner spawner) throws IOException {
+    public Snake(String id, KeyHandler keyHandler, int startingSize, int delay, int x, int y, ItemSpawner spawner) throws IOException {
         super(spawner);
+        this.id = id;
         this.keyHandler = keyHandler;
         this.xStart = x;
         this.yStart = y;
-        for (int i=0; i <= startingSize; i++) {
-            this.x.add(x);
-            this.y.add(y);
-            d.add(direction);
-        }
+        this.x.add(x);
+        this.y.add(y);
+        d.add(direction);
 
-        headL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-l.png"));
-        headR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-r.png"));
-        headU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-u.png"));
-        headD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-head-d.png"));
-        bodyLR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-lr.png"));
-        bodyUD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-ud.png"));
-        cornerUR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-ur.png"));
-        cornerRD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-rd.png"));
-        cornerDL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-dl.png"));
-        cornerLU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-body-corner-lu.png"));
-        tailU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-u.png"));
-        tailD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-d.png"));
-        tailL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-l.png"));
-        tailR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-tail-r.png"));
-        beheadD = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-behead-d.png"));
-        beheadL = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-behead-l.png"));
-        beheadR = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-behead-r.png"));
-        beheadU = Toolkit.getDefaultToolkit().getImage(Snake.class.getResource("sprites/snake-behead-u.png"));
+
+        headL = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-head-l.png")));
+        headR = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-head-r.png")));
+        headU = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-head-u.png")));
+        headD = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-head-d.png")));
+        bodyLR = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-body-lr.png")));
+        bodyUD = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-body-ud.png")));
+        cornerUR = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-body-corner-ur.png")));
+        cornerRD = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-body-corner-rd.png")));
+        cornerDL = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-body-corner-dl.png")));
+        cornerLU = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-body-corner-lu.png")));
+        tailU = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-tail-u.png")));
+        tailD = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-tail-d.png")));
+        tailL = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-tail-l.png")));
+        tailR = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-tail-r.png")));
+        beheadD = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-behead-d.png")));
+        beheadL = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-behead-l.png")));
+        beheadR = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-behead-r.png")));
+        beheadU = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-behead-u.png")));
+
 
         color = new Color(0,255,0);
         this.sizeStart = startingSize;
         this.value = startingSize;
-        Timer timer = new Timer(delay,this);
-        timer.start();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        observe();
-        turn();
-        move();
-        observe();
+    public void run() {
+        while (true) {
+            ArrayList<Item> items = c.getItems();
+            if (items != null) {
+                for (int i = 0; i < items.size(); i++) {
+                    if (items.get(i).equals(this)) {
+                        x = items.get(i).x;
+                        y = items.get(i).y;
+                        d = ((Snake) items.get(i)).d;
+                        value = items.get(i).value;
+                    }
+                }
+            }
+            turn();
+            move();
+            c.sendItem(this);
+            try {
+                Thread.sleep(150);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     }
 
     public void turn() {
@@ -79,13 +95,18 @@ public class Snake extends Item implements ActionListener {
         }
     }
     public void move() {
-        for (int j = value; j > 0; j--) {
-            y.set(j,y.get(j-1));
-            x.set(j,x.get(j-1));
-            d.set(j,d.get(j-1));
+        if (x.size()  < value) {
+            x.add(x.get(x.size()-1));
+            y.add(y.get(y.size()-1));
+            d.add(d.get(d.size()-1));
         }
-        map.setCoords(x.get(0), y.get(0), this);
-        map.removeCoords(x.get(x.size()-1), y.get(y.size()-1), this);
+        if (x.size() > 1) {
+            for (int j = x.size() - 1; j > 0; j--) {
+                y.set(j, y.get(j - 1));
+                x.set(j, x.get(j - 1));
+                d.set(j, d.get(j - 1));
+            }
+        }
         switch (direction) {
             case 'l' -> x.set(0, x.get(0) - 1);
             case 'd' -> y.set(0, y.get(0) + 1);
@@ -94,149 +115,122 @@ public class Snake extends Item implements ActionListener {
         }
     }
 
-    public void observe() {
-        ArrayList<Item> collisions = map.getCoords(x.get(0), y.get(0));
-        if (collisions == null ){
-            die();
+    public void observe(Item collision) {
+        if (collision == null ){
         } else {
-            for (int i=0; i < collisions.size(); i++) {
-                if (collisions.get(i).getClass() == Snake.class) {
-                    die();
-                }
-                if (collisions.size() > 0 && Item.class.isAssignableFrom(collisions.get(i).getClass())) {
-                    collisions.get(i).interact(this);
-                }
+            if (collision.getClass() == Snake.class) {
+                die();
             }
+            collision.interact(this);
         }
     }
 
     @Override
     public void die() {
         value = sizeStart;
-        if (x.size() > value) {
-            for (int j = x.size()-1; j > value; j--) {
-                map.removeCoords(x.get(j), y.get(j), this);
-                x.remove(j);
-                y.remove(j);
-                d.remove(j);
-            }
-        } else {
-            for (int i = x.size(); i <= value; i++) {
-                x.add(xStart);
-                y.add(yStart);
-                d.add(direction);
-            }
-        }
-        map.removeCoords(x.get(x.size()-1), y.get(y.size()-1), this);
-        x.set(0,xStart);
-        y.set(0, yStart);
+        x = new ArrayList<>();
+        y = new ArrayList<>();
+        d = new ArrayList<>();
+        x.add(xStart);
+        y.add(yStart);
+        d.add(direction);
     }
+
 
     @Override
     public void draw(Graphics g, int tileSize) {
-        for (int i = 0; i < value; i++ ) {
-            Image drawWith = null; 
+        for (int i = 0; i < x.size() ; i++ ) {
+            Image drawWith = null;
                 if (i == 0) {
-                    if (value == 1) {
+                    if (x.size() == 1) {
                         if (direction == 'l') {
-                            drawWith = beheadL;
+                            drawWith = beheadL.getImage();
                         } else if (direction == 'd') {
-                            drawWith = beheadD;
+                            drawWith = beheadD.getImage();
                         } else if (direction == 'u') {
-                            drawWith = beheadU;
+                            drawWith = beheadU.getImage();
                         } else if (direction == 'r') {
-                            drawWith = beheadR;
+                            drawWith = beheadR.getImage();
                         }
                     } else {
                         if (direction == 'l') {
-                            drawWith = headL;
+                            drawWith = headL.getImage();
                         } else if (direction == 'd') {
-                            drawWith = headD;
+                            drawWith = headD.getImage();
                         } else if (direction == 'u') {
-                            drawWith = headU;
+                            drawWith = headU.getImage();
                         } else if (direction == 'r') {
-                            drawWith = headR;
+                            drawWith = headR.getImage();
                         }
                     }
-                } else if (i == value -1 ) {
+                } else if (i == x.size()-1  ) {
                     for (int j=i; j >= 0; j--) {
                         if (x.get(j) != x.get(i) || y.get(j) != y.get(i)) {
                             if (y.get(j) < y.get(i) && x.get(j) == x.get(i)) {
-                                drawWith = tailU;
+                                drawWith = tailU.getImage();
                             }
                             if (y.get(j) > y.get(i) && x.get(j) == x.get(i)) {
-                                drawWith = tailD;
+                                drawWith = tailD.getImage();
                             }
                             if (x.get(j) < x.get(i) && y.get(j) == y.get(i)) {
-                                drawWith = tailL;
+                                drawWith = tailL.getImage();
                             }
                             if (x.get(j) > x.get(i) && y.get(j) == y.get(i)) {
-                                drawWith = tailR;
+                                drawWith = tailR.getImage();
                             }
                             break;
                         }
                     }
                 } else {
-                    if (x.get(i) == x.get(i - 1) && y.get(i) != y.get(i-1)  && y.get(i) != y.get(i+1) || x.get(i) == x.get(i + 1) && y.get(i) != y.get(i+1)  && y.get(i) != y.get(i-1) ) {
-                        drawWith = bodyUD;
-                    }
+                    if (x.get(i) == x.get(i - 1) && y.get(i) != y.get(i - 1) && y.get(i) != y.get(i + 1) || x.get(i) == x.get(i + 1) && y.get(i) != y.get(i + 1) && y.get(i) != y.get(i - 1)) {
+                          drawWith = bodyUD.getImage();
+                        }
 
-                    if (y.get(i) == y.get(i - 1) && x.get(i) != x.get(i-1) && x.get(i) != x.get(i+1) || y.get(i) == y.get(i + 1) && x.get(i) != x.get(i+1) && x.get(i) != x.get(i-1)) {
-                        drawWith = bodyLR;
-                    }
+                        if (y.get(i) == y.get(i - 1) && x.get(i) != x.get(i - 1) && x.get(i) != x.get(i + 1) || y.get(i) == y.get(i + 1) && x.get(i) != x.get(i + 1) && x.get(i) != x.get(i - 1)) {
+                            drawWith = bodyLR.getImage();
+                        }
 
-                    // corners are determined by segment direction, so that they work properly when disjointed kkby portals
-                    // if the previous segment is facing the right and the current segment is facing down
-                    // OR
-                    // the previous segment is facing up and the current segment is facing the left
-                    if (d.get(i+1) == 'r' && d.get(i) == 'd' || d.get(i+1) == 'u' && d.get(i) == 'l') {
-                        drawWith = cornerDL;
-                    }
-                    if (d.get(i+1) == 'l' && d.get(i) == 'u' || d.get(i+1) == 'd' && d.get(i) == 'r') {
-                        drawWith = cornerUR;
-                    }
-                    if (d.get(i+1) == 'l' && d.get(i) == 'd' || d.get(i+1) == 'u' && d.get(i) == 'r') {
-                        drawWith = cornerRD;
-                    }
-                    if (d.get(i+1) == 'r' && d.get(i) == 'u' || d.get(i+1) == 'd' && d.get(i) == 'l') {
-                        drawWith = cornerLU;
-                    }
+                        // corners are determined by segment direction, so that they work properly when disjointed by portals
+                        if (d.get(i + 1) == 'r' && d.get(i) == 'd' || d.get(i + 1) == 'u' && d.get(i) == 'l') {
+                            // if the previous segment is facing the right and the current segment is facing down
+                            // OR
+                            // the previous segment is facing up and the current segment is facing the left
+                            drawWith = cornerDL.getImage();
+                        }
+                        if (d.get(i + 1) == 'l' && d.get(i) == 'u' || d.get(i + 1) == 'd' && d.get(i) == 'r') {
+                            drawWith = cornerUR.getImage();
+                        }
+                        if (d.get(i + 1) == 'l' && d.get(i) == 'd' || d.get(i + 1) == 'u' && d.get(i) == 'r') {
+                            drawWith = cornerRD.getImage();
+                        }
+                        if (d.get(i + 1) == 'r' && d.get(i) == 'u' || d.get(i + 1) == 'd' && d.get(i) == 'l') {
+                            drawWith = cornerLU.getImage();
+                        }
             }
             g.drawImage(drawWith, x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize, null);
         }
     }
-
     public KeyHandler getSnakeControls() {
         return keyHandler;
     }
 
-    @Override
-    public void addValue(int value){
-        super.addValue(value);
-        if (this.value < 1) {
-            die();
-            return;
-        }
-
-        // grow new segment for each new value point
-        if (value > 0) {
-            for (int j=0; j < value; j++) {
-                x.add(x.get(x.size()-1));
-                y.add(y.get(y.size()-1));
-                d.add(d.get(d.size()-1));
-            }
-        } else {
-            for (int i=value; i < 0; i++) {
-                map.removeCoords(x.get(x.size()-2), y.get(y.size()-2), this);
-                x.remove(x.size()-1);
-                y.remove(y.size()-1);
-                d.remove(d.size()-1);
-            }
-        }
-
-    }
 
     public char getDirection() {
         return direction;
     }
+
+    public String toString() {
+        return id;
+    }
+
+    @Override
+    public void addValue(int value) {
+        super.addValue(value);
+        if (value < 0) {
+            x.remove(x.get(x.size()-1));
+            y.remove(y.get(y.size()-1));
+            d.remove(d.get(d.size()-1));
+        }
+    }
 }
+

@@ -13,7 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -28,8 +27,10 @@ public class GamePanel extends JPanel implements ActionListener {
     Blueprint map;
     ArrayList<ItemSpawner> itemSpawners = new ArrayList<>();
     ArrayList<Item> itemOrphans = new ArrayList<>();
+    Client c;
 
-    public GamePanel(int col, int row, int resolution, int scale, Blueprint map, ArrayList<ItemSpawner> spawners, ArrayList<Item> orphans) throws IOException {
+    public GamePanel(int col, int row, int resolution, int scale, Blueprint map, ArrayList<ItemSpawner> spawners, ArrayList<Item> orphans, Client c) throws IOException {
+        this.c = c;
         this.resolution = resolution;
         this.scale = scale;
         this.tileSize = resolution * scale;
@@ -43,13 +44,12 @@ public class GamePanel extends JPanel implements ActionListener {
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
-        for (Item item : itemOrphans) {
-            if (item.getClass() == Snake.class) {
-                this.addKeyListener(((Snake) item).getSnakeControls());
-            }
-        }
+
         this.setFocusable(true);
-        new Timer(100,this).start();
+        new Timer(30,this).start();
+        Thread t = new Thread( itemOrphans.get(0));
+        t.start();
+
     }
 
     @Override
@@ -59,11 +59,11 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (ItemSpawner itemSpawner : itemSpawners) {
-            itemSpawner.drawItems(g, tileSize);
-        }
-        for (Item item : itemOrphans) {
-            item.draw(g, tileSize);
+        ArrayList<Item> items = c.getItems();
+        if (items != null) {
+            for (Item item : items) {
+                item.draw(g, tileSize);
+            }
         }
     }
 }

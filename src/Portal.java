@@ -10,7 +10,7 @@
 import java.awt.*;
 
 public class Portal extends Item {
-    protected Portal pair;
+    Portal pair;
 
     public Portal(ItemSpawner spawner) {
         super(spawner);
@@ -52,7 +52,7 @@ public class Portal extends Item {
                 case 'u' -> snake.y.set(0, snake.y.get(0) - 1);
                 case 'r' -> snake.x.set(0, snake.x.get(0) + 1);
             }
-            snake.observe();
         }
     }
+
 }
