@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Server extends Thread {
 	DatagramSocket s;
@@ -8,6 +9,8 @@ public class Server extends Thread {
 	ArrayList<Item> orphans;
 	ArrayList<ItemSpawner> spawners;
 	int col, row;
+
+	HashMap<Item, Integer> connections = new HashMap<>();
 	public Server(int col, int row, ArrayList<Item> orphans, ArrayList<ItemSpawner> spawners) {
 		try {
 			s = new DatagramSocket(61529);
@@ -33,10 +36,26 @@ public class Server extends Thread {
 				try(ObjectInputStream ois = new ObjectInputStream(bais)) {
 					Packet packetRec = (Packet) ois.readObject();
 					Item item = packetRec.items.get(0);
-					if (item instanceof Snake && item.x.get(0) > row -1|| item.x.get(0) < 0 || item.y.get(0) > col -1|| item.y.get(0) < 0) {
+					if (item instanceof Snake && item.x.get(0) > row -1 || item.x.get(0) < 0 || item.y.get(0) > col -1 || item.y.get(0) < 0) {
 						item.die();
 					}
 					addItem(item);
+					if (item instanceof Snake) {
+
+						boolean contains = false;
+						Item i = null;
+						for (HashMap.Entry<Item, Integer> set : connections.entrySet()) {
+							if (set.getKey().toString().equals(item.toString())) {
+								i = set.getKey();
+								contains = true;
+							}
+						}
+						if (contains) {
+							connections.replace(i, 0);
+						} else {
+							connections.put(item, 0);
+						}
+					}
 				} catch (ClassNotFoundException e) {
 					throw new RuntimeException(e);
 				}
@@ -52,8 +71,6 @@ public class Server extends Thread {
 						for (int k = 0; k < items.get(j).x.size(); k++) {
 							if (items.get(i) instanceof Snake && !(items.get(j).equals(items.get(i)) && k == 0) && items.get(i).x.get(0).equals(items.get(j).x.get(k)) && items.get(i).y.get(0).equals(items.get(j).y.get(k))) {
 								((Snake) items.get(i)).observe(items.get(j));
-								System.out.println(items.get(i).value);
-
 							}
 						}
 					}
@@ -67,6 +84,17 @@ public class Server extends Thread {
 				s.send(dps);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
+			}
+			Item remove = null;
+			for (HashMap.Entry<Item, Integer> set : connections.entrySet()) {
+				connections.replace(set.getKey(), set.getValue() + 1);
+				if (connections.get(set.getKey()) > 1) {
+					items.remove(set.getKey());
+					remove = set.getKey();
+				}
+			}
+			if (remove != null) {
+				connections.remove(remove);
 			}
 		}
 	}
