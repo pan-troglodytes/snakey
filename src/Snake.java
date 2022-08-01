@@ -23,6 +23,7 @@ public class Snake extends Item {
     ArrayList<Character> d = new ArrayList<>();
     ImageIcon headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
     static Client c;
+    int delay;
 
     public Snake(String id, KeyHandler keyHandler, int startingSize, int delay, int x, int y, ItemSpawner spawner) throws IOException {
         super(spawner);
@@ -32,6 +33,7 @@ public class Snake extends Item {
         this.yStart = y;
         this.x.add(x);
         this.y.add(y);
+        this.delay = delay;
         d.add(direction);
 
 
@@ -77,7 +79,7 @@ public class Snake extends Item {
             move();
             c.sendItem(this);
             try {
-                Thread.sleep(150);
+                Thread.sleep(delay);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

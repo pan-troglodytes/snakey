@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Server extends Thread {
@@ -36,24 +37,26 @@ public class Server extends Thread {
 				try(ObjectInputStream ois = new ObjectInputStream(bais)) {
 					Packet packetRec = (Packet) ois.readObject();
 					Item item = packetRec.items.get(0);
-					if (item instanceof Snake && item.x.get(0) > row -1 || item.x.get(0) < 0 || item.y.get(0) > col -1 || item.y.get(0) < 0) {
-						item.die();
-					}
-					addItem(item);
-					if (item instanceof Snake) {
-
-						boolean contains = false;
-						Item i = null;
-						for (HashMap.Entry<Item, Integer> set : connections.entrySet()) {
-							if (set.getKey().toString().equals(item.toString())) {
-								i = set.getKey();
-								contains = true;
-							}
+					if (item != null) {
+						if (item instanceof Snake && item.x.get(0) > row - 1 || item.x.get(0) < 0 || item.y.get(0) > col - 1 || item.y.get(0) < 0) {
+							item.die();
 						}
-						if (contains) {
-							connections.replace(i, 0);
-						} else {
-							connections.put(item, 0);
+						addItem(item);
+						if (item instanceof Snake) {
+
+							boolean contains = false;
+							Item i = null;
+							for (HashMap.Entry<Item, Integer> set : connections.entrySet()) {
+								if (set.getKey().toString().equals(item.toString())) {
+									i = set.getKey();
+									contains = true;
+								}
+							}
+							if (contains) {
+								connections.replace(i, 0);
+							} else {
+								connections.put(item, 0);
+							}
 						}
 					}
 				} catch (ClassNotFoundException e) {
@@ -79,6 +82,7 @@ public class Server extends Thread {
 			try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				 ObjectOutputStream oos = new ObjectOutputStream(baos)) {
 				Packet packetSend = new Packet(items);
+				packetSend.setRowCol(row, col);
 				oos.writeObject(packetSend);
 				DatagramPacket dps = new DatagramPacket(baos.toByteArray(), baos.toByteArray().length, dpr.getAddress(), dpr.getPort());
 				s.send(dps);

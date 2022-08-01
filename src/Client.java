@@ -33,7 +33,10 @@ public class Client extends Thread {
 				try(ObjectInputStream o = new ObjectInputStream(b)){
 					Packet packetRec = (Packet) o.readObject();
 					rec = packetRec;
+					synchronized (this) {
 
+						notifyAll();
+					}
 				} catch (ClassNotFoundException e) {
 					throw new RuntimeException(e);
 				}
@@ -64,5 +67,17 @@ public class Client extends Thread {
 			return null;
 		}
 		return rec.items;
+	}
+	public Integer getRow() {
+		if (rec == null) {
+			return null;
+		}
+		return rec.getRow();
+	}
+	public Integer getCol() {
+		if (rec == null) {
+			return null;
+		}
+		return rec.getCol();
 	}
 }

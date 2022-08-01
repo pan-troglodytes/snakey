@@ -8,6 +8,7 @@
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,9 +26,11 @@ public class Main {
         for (int i=0; i < args.length; i++) {
             if (args[i].equals("--col")) {
                 col = Integer.parseInt(args[i+1]);
-            } else if (args[i].equals("--row")) {
+            }
+            if (args[i].equals("--row")) {
                 row = Integer.parseInt(args[i+1]);
-            } else if (args[i].equals("--server")) {
+            }
+            if (args[i].equals("--server")) {
                 server = true;
             } else if (args[i].equals("--name")) {
                 name = args[i+1];
@@ -36,9 +39,9 @@ public class Main {
 
         if (server) {
             Portal p=new Portal(null);
-            p.setPosition(8,2);
+            p.setPosition((int) (row *.1),(int)( col * .1));
             Portal p1 = new Portal(null);
-            p1.setPosition(8,10);
+            p1.setPosition((int) (row *.8),(int)( col * .8));
             p.setPair(p1);
             p1.setPair(p);
             orphans.add(p);
@@ -56,9 +59,20 @@ public class Main {
             Client c = new Client("127.0.0.1",61529);
             c.start();
             map = new Blueprint(col, row, c);
-            orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K), 6, (int) (Math.log10((map.getCol() + map.getRow()))*100) ,4,4, null));
+            orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K), 6, (int) (Math.log10((map.getCol() + map.getRow()))*100) ,(int)(col * .2),(int)(row * .2), null));
             ((Snake)orphans.get(0)).c = c;
-            GamePanel gamePanel = new GamePanel(col, row, 16, 2, map, spawners, orphans, c);
+            // sending packet to server will trigger a response containing the panel dimensions
+            c.sendItem(null);
+            synchronized (c) {
+                try {
+                    c.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            // >c.getrow()
+            // call the dimensions the client has received from server
+            GamePanel gamePanel = new GamePanel(c.getRow(), c.getCol(), 16, 2, map, spawners, orphans, c);
             if (!name.equals("")) {
                 orphans.get(0).setId(name);
             }
