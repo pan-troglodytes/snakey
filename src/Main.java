@@ -19,21 +19,22 @@ public class Main {
     static Blueprint map;
     static boolean server = false;
     static String name = "";
+    static String ip = "127.0.0.1";
+    static String port = "61529";
+    static int col = 15;
+    static int row = 15;
 
     public static void main(String[] args) throws IOException {
-        int col = 15;
-        int row = 15;
         for (int i=0; i < args.length; i++) {
-            if (args[i].equals("--col")) {
-                col = Integer.parseInt(args[i+1]);
-            }
-            if (args[i].equals("--row")) {
-                row = Integer.parseInt(args[i+1]);
-            }
             if (args[i].equals("--server")) {
                 server = true;
-            } else if (args[i].equals("--name")) {
+                port = args[i+1];
+                row = Integer.parseInt(args[i+2]);
+                col = Integer.parseInt(args[i+3]);
+            } else if (args[i].equals("--client")) {
                 name = args[i+1];
+                ip = args[i+2];
+                port = args[i+3];
             }
         }
 
@@ -46,7 +47,7 @@ public class Main {
             p1.setPair(p);
             orphans.add(p);
             orphans.add(p1);
-            Server s = new Server(col, row, orphans, spawners);
+            Server s = new Server(Integer.parseInt(port), col, row, orphans, spawners);
             s.start();
 
         } else {
@@ -56,7 +57,7 @@ public class Main {
             window.setLocationRelativeTo(null);
             window.setVisible(true);
             window.setResizable(false);
-            Client c = new Client("127.0.0.1",61529);
+            Client c = new Client(ip,Integer.parseInt(port));
             c.start();
             map = new Blueprint(col, row, c);
             orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K), 6, (int) (Math.log10((map.getCol() + map.getRow()))*100) ,(int)(col * .2),(int)(row * .2), null));

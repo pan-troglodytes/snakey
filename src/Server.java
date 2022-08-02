@@ -12,9 +12,9 @@ public class Server extends Thread {
 	int col, row;
 
 	HashMap<Item, Integer> connections = new HashMap<>();
-	public Server(int col, int row, ArrayList<Item> orphans, ArrayList<ItemSpawner> spawners) {
+	public Server(int port, int col, int row, ArrayList<Item> orphans, ArrayList<ItemSpawner> spawners) {
 		try {
-			s = new DatagramSocket(61529);
+			s = new DatagramSocket(port);
 		} catch (SocketException e) {
 			throw new RuntimeException(e);
 		}

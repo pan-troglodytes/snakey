@@ -12,3 +12,11 @@ a snake game with extra features like portals and varied food and user customiza
 	<img alt="rotten04" src="https://raw.githubusercontent.com/pan-troglodytes/snakey/master/screenshots/rotten04.png">
 	<img alt="rotten05" src="https://raw.githubusercontent.com/pan-troglodytes/snakey/master/screenshots/rotten05.png">
 </p>
+
+## usage
+
+### server arguments
+--server <port> <rows> <columns>
+
+### client arguments
+--client <name> <ip of server> <port>

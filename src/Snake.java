@@ -141,6 +141,7 @@ public class Snake extends Item {
 
     @Override
     public void draw(Graphics g, int tileSize) {
+        g.setFont(new Font("TimesRoman", Font.PLAIN, 40));
         for (int i = 0; i < x.size() ; i++ ) {
             Image drawWith = null;
                 if (i == 0) {
@@ -208,7 +209,9 @@ public class Snake extends Item {
                         if (d.get(i + 1) == 'r' && d.get(i) == 'u' || d.get(i + 1) == 'd' && d.get(i) == 'l') {
                             drawWith = cornerLU.getImage();
                         }
-            }
+                }
+                g.setColor(Color.RED);
+            g.drawString(id, x.get(0)*tileSize, (y.get(0)-1)*tileSize);
             g.drawImage(drawWith, x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize, null);
         }
     }
