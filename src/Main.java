@@ -60,7 +60,7 @@ public class Main {
             Client c = new Client(ip,Integer.parseInt(port));
             c.start();
             map = new Blueprint(col, row, c);
-            orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K), 6, (int) (Math.log10((map.getCol() + map.getRow()))*100) ,(int)(col * .2),(int)(row * .2), null));
+            orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT), 6, (int) (Math.log10((map.getCol() + map.getRow()))*100) ,(int)(col * .2),(int)(row * .2), null));
             ((Snake)orphans.get(0)).c = c;
             // sending packet to server will trigger a response containing the panel dimensions
             c.sendItem(null);
