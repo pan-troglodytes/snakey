@@ -75,8 +75,8 @@ public class Snake extends Item {
                     }
                 }
             }
-            turn();
-            move();
+			turn();
+			move();
             c.sendItem(this);
             try {
                 Thread.sleep(delay);
@@ -88,14 +88,15 @@ public class Snake extends Item {
     }
 
     public void turn() {
-        if (direction == 'r' && keyHandler.directionNew != 'l' ||
-                direction == 'l' && keyHandler.directionNew != 'r' ||
-                direction == 'd' && keyHandler.directionNew != 'u' ||
-                direction == 'u' && keyHandler.directionNew != 'd') {
-            direction = keyHandler.directionNew;
-            d.set(0,direction);
-        }
+		if (direction == 'r' && keyHandler.directionNew != 'l' ||
+				direction == 'l' && keyHandler.directionNew != 'r' ||
+				direction == 'd' && keyHandler.directionNew != 'u' ||
+				direction == 'u' && keyHandler.directionNew != 'd') {
+			direction = keyHandler.directionNew;
+			d.set(0,direction);
+		}
     }
+
     public void move() {
         if (x.size()  < value) {
             x.add(x.get(x.size()-1));
@@ -232,9 +233,15 @@ public class Snake extends Item {
     public void addValue(int value) {
         super.addValue(value);
         if (value < 0) {
-            x.remove(x.get(x.size()-1));
-            y.remove(y.get(y.size()-1));
-            d.remove(d.get(d.size()-1));
+			for (int i = value; i < 0; i++) {
+				if (x.size() > 1) {
+					x.remove(x.get(x.size()-1));
+					y.remove(y.get(y.size()-1));
+					d.remove(d.get(d.size()-1));
+				} else {
+					die();
+				}
+			}
         }
     }
 }

@@ -40,9 +40,9 @@ public class Main {
 
         if (server) {
             Portal p=new Portal(null);
-            p.setPosition((int) (row *.1),(int)( col * .1));
+            p.setPosition((int) (row *.8),(int)( col * .1));
             Portal p1 = new Portal(null);
-            p1.setPosition((int) (row *.8),(int)( col * .8));
+            p1.setPosition((int) (row *.1),(int)( col * .8));
             p.setPair(p1);
             p1.setPair(p);
             orphans.add(p);
@@ -60,7 +60,7 @@ public class Main {
             Client c = new Client(ip,Integer.parseInt(port));
             c.start();
             map = new Blueprint(col, row, c);
-            orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT), 6, (int) (Math.log10((map.getCol() + map.getRow()))*100) ,(int)(col * .2),(int)(row * .2), null));
+            orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT), 4, (int) (Math.log10((map.getCol() + map.getRow()))*100) ,(int)(col * .2),(int)(row * .2), null));
             ((Snake)orphans.get(0)).c = c;
             // sending packet to server will trigger a response containing the panel dimensions
             c.sendItem(null);

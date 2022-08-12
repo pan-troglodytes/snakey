@@ -1,7 +1,6 @@
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class Server extends Thread {
@@ -10,6 +9,8 @@ public class Server extends Thread {
 	ArrayList<Item> orphans;
 	ArrayList<ItemSpawner> spawners;
 	int col, row;
+	int test =0;
+	int test2 =0;
 
 	HashMap<Item, Integer> connections = new HashMap<>();
 	public Server(int port, int col, int row, ArrayList<Item> orphans, ArrayList<ItemSpawner> spawners) {
@@ -100,7 +101,28 @@ public class Server extends Thread {
 			if (remove != null) {
 				connections.remove(remove);
 			}
+
+			for (int i=0; i < items.size(); i++) {
+				if (items.get(i).x.size() == 0) {
+					items.remove(i);
+				}
+			}
+			test++;
+			test2++;
+			if  (test > 10) {
+				test=0;
+				Apple a = new Apple(null);
+				a.setPosition((int) ((Math.random() * ( col - 0)) + 0), (int) ((Math.random() * ( col - 0)) + 0));
+				items.add(a);
+			}
+			if  (test2 > 30) {
+				test2=0;
+				Banana b = new Banana(null);
+				b.setPosition((int) ((Math.random() * ( col - 0)) + 0), (int) ((Math.random() * ( col - 0)) + 0));
+				items.add(b);
+			}
 		}
+
 	}
 
 	public void addItem(Item item) {
