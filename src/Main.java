@@ -37,7 +37,7 @@ public class Main {
         map = new Blueprint(col, row);
         Item.setBlueprint(map);
         ItemSpawner.setBlueprint(map);
-        orphans.add(new Snake(new KeyHandler(KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_H, KeyEvent.VK_K), 4, (int) (Math.log10((map.getCol() + map.getRow()))*100) ,0,0, null));
+        orphans.add(new Snake(new KeyHandler(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT), 4, (int) (Math.log10((map.getCol() + map.getRow()))*100) ,0,0, null));
         spawners.add(new ItemSpawner(Apple.class, 0, 0, col-1, row-1, 3, 1000));
         spawners.add(new ItemSpawner(Banana.class, 0, 0, col-1, row-1, 1, 3000));
         Portal p = new Portal(null);

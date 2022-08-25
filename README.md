@@ -12,3 +12,25 @@ a snake game with extra features like portals and varied food and user customiza
 	<img alt="rotten04" src="https://raw.githubusercontent.com/pan-troglodytes/snakey/master/screenshots/rotten04.png">
 	<img alt="rotten05" src="https://raw.githubusercontent.com/pan-troglodytes/snakey/master/screenshots/rotten05.png">
 </p>
+
+## build
+```
+git clone https://github.com/pan-troglodytes/snakey
+```
+```
+cd snakey/src
+```
+then ```git checkout <branch>``` into whatever branch you want. e.g. ```server```
+```
+javac *.java
+```
+```
+jar cfe snakey.jar Main *
+```
+execute jar file with ```java -jar snakey.jar```
+
+## for the server branch
+### server
+```java -jar snakey.jar --server <port> <width of map> <height>```
+### client
+```java -jar snakey.jar --client <name> <ip> <port> # ip and port of server```
