@@ -14,8 +14,8 @@ import java.awt.event.ActionListener;
 public abstract class Fruit extends Item implements ActionListener {
 	boolean rotten = false;
 	Color colorRotten;
-	public Fruit(ItemSpawner spawner) {
-		super(spawner);
+	public Fruit(String idSpawner) {
+		super(idSpawner);
 		x.add(0);
 		y.add(0);
 	}

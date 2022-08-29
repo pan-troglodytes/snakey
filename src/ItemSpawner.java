@@ -7,76 +7,67 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class ItemSpawner implements ActionListener {
-    static Blueprint map;
+public class ItemSpawner {
     ArrayList<Item> items = new ArrayList<>();
     int itemMax = 3;
     int[] coordsTopLeft;
     int[] coordsBotRight;
 
     Class<?> itemType;
-    private Timer timer;
-    public static void setBlueprint(Blueprint b) {
-        map = b;
-    }
+    int time = 0;
+    int delay;
     ItemSpawner(Class<?> itemType, int x1, int y1, int x2, int y2, int max, int delay) {
-        this.timer = new Timer(delay, this);
-        timer.start();
         coordsTopLeft = new int[] {x1,y1};
         coordsBotRight = new int[] {x2,y2};
         this.itemType = itemType;
         itemMax = max;
+        this.delay = delay;
     }
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (items.size() < itemMax) {
-            Item itemNew = null;
-            try {
-                itemNew = (Item) itemType.getDeclaredConstructors()[0].newInstance(this);
-            } catch (InstantiationException ex) {
-                throw new RuntimeException(ex);
-            } catch (IllegalAccessException ex) {
-                throw new RuntimeException(ex);
-            } catch (InvocationTargetException ex) {
-                throw new RuntimeException(ex);
-            }
-            ArrayList<Integer> newPos;
-            ArrayList<ArrayList<Integer>> freeSpace = new ArrayList<>();
-            for (int i=coordsTopLeft[0]; i <= coordsBotRight[0]; i++) {
-                for (int j=coordsTopLeft[1]; j <= coordsBotRight[1]; j++) {
-                    if (map.getCoords(i,j).size() == 0) {
-                        freeSpace.add(new ArrayList<>());
-                        freeSpace.get(freeSpace.size()-1).add(i);
-                        freeSpace.get(freeSpace.size()-1).add(j);
+
+    public Item spawnItem(ArrayList<Item> existingItems) {
+        time++;
+        if (time >= delay) {
+            time = 0;
+            if (items.size() < itemMax) {
+                Item itemNew = null;
+                try {
+                    itemNew = (Item) itemType.getDeclaredConstructors()[0].newInstance(this.toString());
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+                    throw new RuntimeException(ex);
+                }
+                ArrayList<ArrayList<Integer>> freeSpaces = new ArrayList<>();
+                boolean free = true;
+                for (int i=coordsTopLeft[0]; i < coordsBotRight[0]; i++) {
+                    for (int j=coordsTopLeft[1]; j < coordsBotRight[1]; j++) {
+                        free = true;
+                        for (int k=0; k < existingItems.size(); k++) {
+                            for (int l=0; l < existingItems.get(k).x.size(); l++) {
+                                if (i == existingItems.get(k).x.get(l) && j == existingItems.get(k).y.get(l)) {
+                                    free = false;
+                                }
+                            }
+                        }
+                        if (free) {
+                            ArrayList<Integer> space = new ArrayList<>();
+                            space.add(i);
+                            space.add(j);
+                            freeSpaces.add(space);
+                        }
                     }
                 }
-            }
-            if (freeSpace.size() > 0) {
-                newPos = freeSpace.get(new Random().nextInt(freeSpace.size()));
-                itemNew.setPosition(newPos.get(0), newPos.get(1));
-                items.add(itemNew);
-            }
-        }
-    }
-
-    public void drawItems(Graphics g, int tileSize) {
-        for (Item item : items) {
-            if (item != null) {
-                item.draw(g, tileSize);
+                if (freeSpaces.size() > 0) {
+                    int newSpace = new Random().nextInt(freeSpaces.size());
+                    itemNew.setPosition(freeSpaces.get(newSpace).get(0),freeSpaces.get(newSpace).get(1));
+                    items.add(itemNew);
+                    return itemNew;
+                }
             }
         }
-    }
-
-    public ArrayList<Item> getItems() {
-        return items;
+        return null;
     }
 
     public void remove(Item i) {

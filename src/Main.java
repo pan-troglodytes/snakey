@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class Main {
     static ArrayList<Item> orphans = new ArrayList<>();
     static ArrayList<ItemSpawner> spawners = new ArrayList<>();
-    static Blueprint map;
     static boolean server = false;
     static String name = "";
     static String ip = "127.0.0.1";
@@ -39,14 +38,15 @@ public class Main {
         }
 
         if (server) {
-            Portal p=new Portal(null);
-            p.setPosition((int) (row *.8),(int)( col * .1));
+            Portal p =new Portal(null);
+            p.setPosition((int) (col *.8),(int)( row * .1));
             Portal p1 = new Portal(null);
-            p1.setPosition((int) (row *.1),(int)( col * .8));
-            p.setPair(p1);
-            p1.setPair(p);
+            p1.setPosition((int) (col *.1),(int)( row * .8));
+            p.linkPair(p1);
             orphans.add(p);
             orphans.add(p1);
+            spawners.add(new ItemSpawner(Apple.class, 0, 0, col, row, 3, 1));
+            spawners.add(new ItemSpawner(Banana.class, 0, 0, col, row, 1, 5));
             Server s = new Server(Integer.parseInt(port), col, row, orphans, spawners);
             s.start();
 
@@ -59,8 +59,7 @@ public class Main {
             window.setResizable(false);
             Client c = new Client(ip,Integer.parseInt(port));
             c.start();
-            map = new Blueprint(col, row, c);
-            orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT), 4, (int) (Math.log10((map.getCol() + map.getRow()))*100) ,(int)(col * .2),(int)(row * .2), null));
+            orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT), 4, (int) (Math.log10((col + row))*100) ,(int)(col * .2),(int)(row * .2), null));
             ((Snake)orphans.get(0)).c = c;
             // sending packet to server will trigger a response containing the panel dimensions
             c.sendItem(null);
@@ -73,7 +72,7 @@ public class Main {
             }
             // >c.getrow()
             // call the dimensions the client has received from server
-            GamePanel gamePanel = new GamePanel(c.getRow(), c.getCol(), 16, 2, map, spawners, orphans, c);
+            GamePanel gamePanel = new GamePanel(c.getCol(), c.getRow(), 16, 2, spawners, orphans, c);
             if (!name.equals("")) {
                 orphans.get(0).setId(name);
             }

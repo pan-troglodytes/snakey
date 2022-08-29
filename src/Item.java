@@ -18,15 +18,11 @@ public abstract class Item implements Serializable, Runnable{
     ArrayList<Integer> x = new ArrayList<>();
     ArrayList<Integer> y = new ArrayList<>();
     Color color;
-    ItemSpawner spawner;
-    static Blueprint map;
-    static void setBlueprint(Blueprint b) {
-        map = b;
-    }
+    String idSpawner;
 
 
-    public Item(ItemSpawner spawner) {
-        this.spawner = spawner;
+    public Item(String idSpawner) {
+        this.idSpawner = idSpawner;
     };
 
     public void draw(Graphics g, int tileSize) {
@@ -57,13 +53,8 @@ public abstract class Item implements Serializable, Runnable{
     }
 
     public void die() {
-        if (spawner == null) {
-            x.clear();
-            y.clear();
-        } else {
-            map.removeCoords(x.get(0), y.get(0), this);
-            spawner.remove(this);
-        }
+        x.clear();
+        y.clear();
     }
 
     public int[] getPosition() {

@@ -12,10 +12,10 @@ import java.awt.*;
 
 public class Banana extends Fruit {
 
-	public Banana(ItemSpawner spawner) {
-		super(spawner);
+	public Banana(String idSpawner) {
+		super(idSpawner);
 		this.value = 3;
-		new Timer(/*(map.getCol() + map.getRow()) **/ 4000, this).start();
+		new Timer(4000, this).start();
 		color = new Color(255, 215, 0);
 		colorRotten = new Color(111, 75, 4);
 	}

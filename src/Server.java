@@ -5,12 +5,8 @@ import java.util.HashMap;
 
 public class Server extends Thread {
 	DatagramSocket s;
-	ArrayList<Item> items = new ArrayList<>();
-	ArrayList<Item> orphans;
-	ArrayList<ItemSpawner> spawners;
 	int col, row;
-	int test =0;
-	int test2 =0;
+	Inventory inv;
 
 	HashMap<Item, Integer> connections = new HashMap<>();
 	public Server(int port, int col, int row, ArrayList<Item> orphans, ArrayList<ItemSpawner> spawners) {
@@ -19,10 +15,12 @@ public class Server extends Thread {
 		} catch (SocketException e) {
 			throw new RuntimeException(e);
 		}
-		this.orphans = orphans;
-		this.spawners = spawners;
+		inv = new Inventory(orphans, spawners);
 		this.col = col;
 		this.row = row;
+
+		Thread t = new Thread(inv);
+		t.start();
 	}
 
 	public void run () {
@@ -42,7 +40,7 @@ public class Server extends Thread {
 						if (item instanceof Snake && item.x.get(0) > row - 1 || item.x.get(0) < 0 || item.y.get(0) > col - 1 || item.y.get(0) < 0) {
 							item.die();
 						}
-						addItem(item);
+						inv.addItem(item);
 						if (item instanceof Snake) {
 
 							boolean contains = false;
@@ -66,9 +64,8 @@ public class Server extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			for (Item orphan : orphans) {
-				addItem(orphan);
-			}
+			inv.addOrphans();
+			ArrayList<Item> items = inv.getItems();
 			if (items != null) {
 				for (int i=0; i < items.size(); i++) {
 					for (int j=0; j < items.size(); j++) {
@@ -101,39 +98,7 @@ public class Server extends Thread {
 			if (remove != null) {
 				connections.remove(remove);
 			}
-
-			for (int i=0; i < items.size(); i++) {
-				if (items.get(i).x.size() == 0) {
-					items.remove(i);
-				}
-			}
-			test++;
-			test2++;
-			if  (test > 10) {
-				test=0;
-				Apple a = new Apple(null);
-				a.setPosition((int) ((Math.random() * ( col - 0)) + 0), (int) ((Math.random() * ( col - 0)) + 0));
-				items.add(a);
-			}
-			if  (test2 > 30) {
-				test2=0;
-				Banana b = new Banana(null);
-				b.setPosition((int) ((Math.random() * ( col - 0)) + 0), (int) ((Math.random() * ( col - 0)) + 0));
-				items.add(b);
-			}
-		}
-
-	}
-
-	public void addItem(Item item) {
-		if (items.contains(item)) {
-			for (int i=0; i < items.size(); i++) {
-				if (items.get(i).equals(item)) {
-					items.set(i, item);
-				}
-			}
-		} else {
-			items.add(item);
+			inv.removeDeadItems();
 		}
 	}
 }

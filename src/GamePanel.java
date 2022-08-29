@@ -24,12 +24,11 @@ public class GamePanel extends JPanel implements ActionListener {
     final int row;
     final int width;
     final int height;
-    Blueprint map;
     ArrayList<ItemSpawner> itemSpawners = new ArrayList<>();
     ArrayList<Item> itemOrphans = new ArrayList<>();
     Client c;
 
-    public GamePanel(int col, int row, int resolution, int scale, Blueprint map, ArrayList<ItemSpawner> spawners, ArrayList<Item> orphans, Client c) throws IOException {
+    public GamePanel(int col, int row, int resolution, int scale, ArrayList<ItemSpawner> spawners, ArrayList<Item> orphans, Client c) throws IOException {
         this.c = c;
         this.resolution = resolution;
         this.scale = scale;
@@ -38,7 +37,6 @@ public class GamePanel extends JPanel implements ActionListener {
         this.row = row;
         this.width = col * tileSize;
         this.height = row * tileSize;
-        this.map = map;
         this.itemOrphans = orphans;
         this.itemSpawners = spawners;
         this.setPreferredSize(new Dimension(width, height));

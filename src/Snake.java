@@ -25,8 +25,8 @@ public class Snake extends Item {
     static Client c;
     int delay;
 
-    public Snake(String id, KeyHandler keyHandler, int startingSize, int delay, int x, int y, ItemSpawner spawner) throws IOException {
-        super(spawner);
+    public Snake(String id, KeyHandler keyHandler, int startingSize, int delay, int x, int y, String idSpawner) throws IOException {
+        super(idSpawner);
         this.id = id;
         this.keyHandler = keyHandler;
         this.xStart = x;

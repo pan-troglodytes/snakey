@@ -12,8 +12,8 @@ import java.awt.*;
 public class Portal extends Item {
     Portal pair;
 
-    public Portal(ItemSpawner spawner) {
-        super(spawner);
+    public Portal(String idSpawner) {
+        super(idSpawner);
         x.add(0);
         y.add(0);
         color = new Color(0, 255, 226);
