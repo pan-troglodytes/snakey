@@ -157,23 +157,23 @@ public class Snake extends Item {
             Image drawWith = null;
                 if (i == 0) {
                     if (x.size() == 1) {
-                        if (direction == 'l') {
+                        if (d.get(0) == 'l') {
                             drawWith = beheadL.getImage();
-                        } else if (direction == 'd') {
+                        } else if (d.get(0) == 'd') {
                             drawWith = beheadD.getImage();
-                        } else if (direction == 'u') {
+                        } else if (d.get(0) == 'u') {
                             drawWith = beheadU.getImage();
-                        } else if (direction == 'r') {
+                        } else if (d.get(0) == 'r') {
                             drawWith = beheadR.getImage();
                         }
                     } else {
-                        if (direction == 'l') {
+                        if (d.get(0) == 'l') {
                             drawWith = headL.getImage();
-                        } else if (direction == 'd') {
+                        } else if (d.get(0) == 'd') {
                             drawWith = headD.getImage();
-                        } else if (direction == 'u') {
+                        } else if (d.get(0) == 'u') {
                             drawWith = headU.getImage();
-                        } else if (direction == 'r') {
+                        } else if (d.get(0) == 'r') {
                             drawWith = headR.getImage();
                         }
                     }
