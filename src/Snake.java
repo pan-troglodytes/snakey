@@ -24,8 +24,9 @@ public class Snake extends Item {
     ImageIcon headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
     static Client c;
     int delay;
+    int r, g, b;
 
-    public Snake(String id, KeyHandler keyHandler, int startingSize, int delay, int x, int y, String idSpawner) throws IOException {
+    public Snake(String id, KeyHandler keyHandler, int startingSize, int delay, int x, int y, String idSpawner, int r, int g, int b) throws IOException {
         super(idSpawner);
         this.id = id;
         this.keyHandler = keyHandler;
@@ -35,6 +36,9 @@ public class Snake extends Item {
         this.y.add(y);
         this.delay = delay;
         d.add(direction);
+        this.r = r;
+        this.g = g;
+        this.b = b;
 
 
         headL = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-head-l.png")));
@@ -56,8 +60,6 @@ public class Snake extends Item {
         beheadR = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-behead-r.png")));
         beheadU = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-behead-u.png")));
 
-
-        color = new Color(0,255,0);
         this.sizeStart = startingSize;
         this.value = startingSize;
     }
@@ -219,7 +221,7 @@ public class Snake extends Item {
                             drawWith = cornerLU.getImage();
                         }
                 }
-                g.setColor(Color.RED);
+                g.setColor(new Color(r,this.g,b));
             g.drawString(id, x.get(0)*tileSize, (y.get(0)-1)*tileSize);
             g.drawImage(drawWith, x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize, null);
         }

@@ -19,4 +19,4 @@ a snake game with extra features like portals and varied food and user customiza
 --server <port> <rows> <columns>
 
 ### client arguments
---client <name> <ip of server> <port>
+--client <name> <ip of server> <port> --color <red> <green> <blue>

@@ -22,6 +22,10 @@ public class Main {
     static String port = "61529";
     static int col = 15;
     static int row = 15;
+    static int r = 255;
+    static int g = 0;
+    static int b = 0;
+
 
     public static void main(String[] args) throws IOException {
         for (int i=0; i < args.length; i++) {
@@ -34,6 +38,12 @@ public class Main {
                 name = args[i+1];
                 ip = args[i+2];
                 port = args[i+3];
+            }
+
+            if (args[i].equals("--color")) {
+                r = Integer.parseInt(args[i+1]);
+                g = Integer.parseInt(args[i+2]);
+                b = Integer.parseInt(args[i+3]);
             }
         }
 
@@ -59,7 +69,7 @@ public class Main {
             window.setResizable(false);
             Client c = new Client(ip,Integer.parseInt(port));
             c.start();
-            orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT), 4, (int) (Math.log10((col + row))*100) ,(int)(col * .2),(int)(row * .2), null));
+            orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT), 4, (int) (Math.log10((col + row))*100) ,(int)(col * .2),(int)(row * .2), null,r,g,b));
             ((Snake)orphans.get(0)).c = c;
             // sending packet to server will trigger a response containing the panel dimensions
             c.sendItem(null);
