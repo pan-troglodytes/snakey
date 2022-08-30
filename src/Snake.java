@@ -98,17 +98,25 @@ public class Snake extends Item {
     }
 
     public void move() {
-        if (x.size()  < value) {
-            x.add(x.get(x.size()-1));
-            y.add(y.get(y.size()-1));
-            d.add(d.get(d.size()-1));
-        }
         if (x.size() > 1) {
             for (int j = x.size() - 1; j > 0; j--) {
                 y.set(j, y.get(j - 1));
                 x.set(j, x.get(j - 1));
                 d.set(j, d.get(j - 1));
             }
+        }
+        if (x.size() < value) {
+            x.add(x.get(x.size() - 1));
+            y.add(y.get(y.size() - 1));
+            d.add(d.get(d.size() - 1));
+        } else if (x.size() > value) {
+            x.remove(x.size()-1);
+            y.remove(y.size()-1);
+            d.remove(d.size()-1);
+        }
+
+        if (x.size() <= 0) {
+            die();
         }
         switch (direction) {
             case 'l' -> x.set(0, x.get(0) - 1);
@@ -227,22 +235,6 @@ public class Snake extends Item {
 
     public String toString() {
         return id;
-    }
-
-    @Override
-    public void addValue(int value) {
-        super.addValue(value);
-        if (value < 0) {
-			for (int i = value; i < 0; i++) {
-				if (x.size() > 1) {
-					x.remove(x.get(x.size()-1));
-					y.remove(y.get(y.size()-1));
-					d.remove(d.get(d.size()-1));
-				} else {
-					die();
-				}
-			}
-        }
     }
 }
 
