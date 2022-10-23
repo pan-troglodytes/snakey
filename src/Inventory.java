@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Inventory implements Runnable {
+public class Inventory extends Thread {
 
     ArrayList<Item> items = new ArrayList<>();
     ArrayList<Item> orphans;
@@ -35,7 +35,9 @@ public class Inventory implements Runnable {
                 }
             }
         } else {
-            items.add(item);
+            synchronized (this) {
+                items.add(item);
+            }
         }
     }
 
@@ -45,18 +47,21 @@ public class Inventory implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
-            for (int i=0; i < spawners.size(); i++) {
-                Item newItem = spawners.get(i).spawnItem(items);
-                if (newItem != null) {
-                    items.add(newItem);
+            while (true) {
+                for (int i = 0; i < spawners.size(); i++) {
+                    Item newItem = spawners.get(i).spawnItem(items);
+                    if (newItem != null) {
+                        synchronized (this) {
+                            items.add(newItem);
+                        }
+                    }
                 }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
             }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 }

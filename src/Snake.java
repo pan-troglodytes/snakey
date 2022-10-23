@@ -66,17 +66,6 @@ public class Snake extends Item {
 
     public void run() {
         while (true) {
-            ArrayList<Item> items = c.getItems();
-            if (items != null) {
-                for (int i = 0; i < items.size(); i++) {
-                    if (items.get(i).equals(this)) {
-                        x = items.get(i).x;
-                        y = items.get(i).y;
-                        d = ((Snake) items.get(i)).d;
-                        value = items.get(i).value;
-                    }
-                }
-            }
 			turn();
 			move();
             c.sendItem(this);
@@ -238,5 +227,18 @@ public class Snake extends Item {
     public String toString() {
         return id;
     }
+    public void update(ArrayList<Item> items) {
+        if (items != null) {
+            for (int i = 0; i < items.size(); i++) {
+                if (items.get(i).equals(this)) {
+                    x = items.get(i).x;
+                    y = items.get(i).y;
+                    d = ((Snake) items.get(i)).d;
+                    value = items.get(i).value;
+                }
+            }
+        }
+    }
 }
+
 

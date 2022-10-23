@@ -27,8 +27,9 @@ public class GamePanel extends JPanel implements ActionListener {
     ArrayList<ItemSpawner> itemSpawners = new ArrayList<>();
     ArrayList<Item> itemOrphans = new ArrayList<>();
     Client c;
+    ArrayList<Item> items = new ArrayList<>();
 
-    public GamePanel(int col, int row, int resolution, int scale, ArrayList<ItemSpawner> spawners, ArrayList<Item> orphans, Client c) throws IOException {
+    public GamePanel(int col, int row, int resolution, int scale, ArrayList<ItemSpawner> spawners, ArrayList<Item> orphans, Client c) {
         this.c = c;
         this.resolution = resolution;
         this.scale = scale;
@@ -57,7 +58,9 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        ArrayList<Item> items = c.getItems();
+        itemOrphans.get(0).draw(g, tileSize);
+        items = c.getItems();
+        ((Snake) itemOrphans.get(0)).update(items);
         if (items != null) {
             for (Item item : items) {
                 item.draw(g, tileSize);
