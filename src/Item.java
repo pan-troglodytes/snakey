@@ -7,6 +7,8 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
+import org.json.JSONObject;
+
 import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ public abstract class Item implements Serializable, Runnable{
 
     ArrayList<Integer> x = new ArrayList<>();
     ArrayList<Integer> y = new ArrayList<>();
+    ArrayList<Character> d = new ArrayList<>();
+
     Color color;
     String idSpawner;
 
@@ -73,5 +77,14 @@ public abstract class Item implements Serializable, Runnable{
 
     @Override
     public void run() {
+    }
+    public JSONObject jsonify() {
+        JSONObject json = new JSONObject();
+        json.put("id", toString());
+        json.put("x", x);
+        json.put("y", y);
+        json.put("value", value);
+        json.put("color", color.getRed()+"-"+color.getGreen()+"-"+color.getBlue());
+        return json;
     }
 }

@@ -1,9 +1,14 @@
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class Server extends Thread {
 	DatagramSocket s;
@@ -24,25 +29,58 @@ public class Server extends Thread {
 	}
 
 	public ArrayList<Item> recievePacket(ArrayList<Player> player) {
-		byte[] data = new byte[40500];
-		DatagramPacket dpr = new DatagramPacket(data, data.length);
+
+
+		byte[] data = new byte[40000];
+		DatagramPacket packet = new DatagramPacket(data, data.length);
 		try {
-			s.receive(dpr);
+			s.receive(packet);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-
 		ArrayList<Item> items = new ArrayList<>();
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(dpr.getData())) {
-			try (ObjectInputStream ois = new ObjectInputStream(bais)) {
-				Packet packetRec = (Packet) ois.readObject();
-				Item item = packetRec.items.get(0);
-				Player p = new Player((InetSocketAddress) dpr.getSocketAddress(), item);
-				if (item != null) {
+		String message = new String(packet.getData());
+
+		JSONObject jo = new JSONObject(message);
+		Iterator keys = jo.keys();
+		while (keys.hasNext()) {
+			Object key = keys.next();
+			if (((String) key).equals("snake")) {
+				Snake snake = null;
+				try {
+					snake = new Snake("", null, 4, 1000, (int) (col * .2), (int) (row * .2), null, 0, 0, 0);
+					JSONObject jo2 = jo.getJSONObject((String) key);
+					snake.id = jo2.getString("id");
+
+					ArrayList<Integer> x = new ArrayList<>();
+
+
+					JSONArray jaX = jo2.getJSONArray("x");
+					snake.x = new ArrayList<>();
+					for (int i = 0; i < jaX.length(); i++) {
+						snake.x.add((Integer) jaX.get(i));
+					}
+					JSONArray jaY = jo2.getJSONArray("y");
+					snake.y = new ArrayList<>();
+					for (int i = 0; i < jaY.length(); i++) {
+						snake.y.add((Integer) jaY.get(i));
+					}
+					JSONArray jaD = jo2.getJSONArray("d");
+					snake.d = new ArrayList<>();
+					for (int i = 0; i < jaD.length(); i++) {
+						snake.d.add(((String) jaD.get(i)).charAt(0));
+					}
+					snake.value = jo2.getInt("value");
+					String[] colors = jo2.getString("color").split("-");
+					snake.setColor(new Color(Integer.parseInt(colors[0]), Integer.parseInt(colors[1]), Integer.parseInt(colors[2])));
+
+
+					Player p = new Player((InetSocketAddress) packet.getSocketAddress(), snake);
 
 					// add new players
 					boolean in = false;
-					for (int i=0; i < player.size(); i++) { if (player.get(i).ia.equals(dpr.getSocketAddress())) {
+					for (int i = 0; i < player.size(); i++) {
+						if (player.get(i).ia.equals(packet.getSocketAddress())) {
 							player.get(i).setDate(new Date());
 							in = true;
 						}
@@ -52,60 +90,60 @@ public class Server extends Thread {
 						player.add(p);
 					}
 
-					if (item instanceof Snake && item.x.get(0) > col - 1 || item.x.get(0) < 0 || item.y.get(0) > row - 1 || item.y.get(0) < 0) {
-						item.die();
+					if (snake.x.get(0) > col - 1 || snake.x.get(0) < 0 || snake.y.get(0) > row - 1 || snake.y.get(0) < 0) {
+						snake.die();
 					}
+					inv.addItem(snake);
+					items.add(snake);
 
-					// update items
-					inv.addItem(item);
-					items = packetRec.items;
-
-					// remove disconnected players
-					ArrayList<Integer> remove = new ArrayList<>();
-					for (int j = 0; j < player.size(); j++) {
-						if (new Date().getTime() - player.get(j).d.getTime() > ((Snake)player.get(j).i).delay + 100) {
-							synchronized (inv) {
-								inv.items.remove(player.get(j).i);
-							}
-							remove.add(j);
-						}
-					}
-					for (int j=0; j < remove.size(); j++) {
-						ArrayList<Integer> removeP = new ArrayList<>();
-						for (int k=0; k < player.size(); k++) {
-							if (player.get(remove.get(j)).equals(player.get(k))) {
-								removeP.add(k);
-							}
-						}
-						for (int k=0; k < removeP.size(); k++) {
-							player.remove((int) removeP.get(k));
-						}
-					}
-
-					// remove dead items
-					inv.removeDeadItems();
+					this.quePlayers.add(p);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
 				}
-				this.quePlayers.add(p);
-			} catch (ClassNotFoundException e) {
-				throw new RuntimeException(e);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
-		return items;
+			// remove disconnected players
+			ArrayList<Integer> remove = new ArrayList<>();
+			for (int j = 0; j < player.size(); j++) {
+				if (new Date().getTime() - player.get(j).d.getTime() > ((Snake) player.get(j).i).delay + 100) {
+					synchronized (inv) {
+						inv.items.remove(player.get(j).i);
+					}
+					remove.add(j);
+				}
+			}
+			for (int j = 0; j < remove.size(); j++) {
+				ArrayList<Integer> removeP = new ArrayList<>();
+				for (int k = 0; k < player.size(); k++) {
+					if (player.get(remove.get(j)).equals(player.get(k))) {
+						removeP.add(k);
+					}
+				}
+				for (int k = 0; k < removeP.size(); k++) {
+					player.remove((int) removeP.get(k));
+				}
+			}
+
+			inv.removeDeadItems();
+			return items;
+
 	}
 	public void sendPacket(Player player, ArrayList<Item> items) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-				Packet packetSend = new Packet(items);
-				packetSend.setRowCol(row, col);
-			synchronized (inv) {
-				oos.writeObject(packetSend);
+		System.out.println(items);
+			JSONObject itemsJO = new JSONObject();
+			JSONArray ja = new JSONArray();
+			for (int i=0; i < items.size(); i++) {
+				ja.put(items.get(i).jsonify());
 			}
-			DatagramPacket dps = new DatagramPacket(baos.toByteArray(), baos.toByteArray().length, player.ia.getAddress(), player.ia.getPort());
-			s.send(dps);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+			itemsJO.put("items", ja);
+			itemsJO.put("row", row);
+			itemsJO.put("col", col);
+			byte[] data = itemsJO.toString().getBytes();
+			DatagramPacket packet = new DatagramPacket(data, data.length, player.ia.getAddress(), player.ia.getPort());
+			try {
+				s.send(packet);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 	}
 }

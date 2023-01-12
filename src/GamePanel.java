@@ -53,7 +53,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        repaint();
+        repaint(0,0, width, height);
     }
 
     public void paintComponent(Graphics g) {
@@ -63,7 +63,10 @@ public class GamePanel extends JPanel implements ActionListener {
         ((Snake) itemOrphans.get(0)).update(items);
         if (items != null) {
             for (Item item : items) {
-                item.draw(g, tileSize);
+                if (!item.getId().equals(itemOrphans.get(0).getId())) {
+                    System.out.println("ture");
+                    item.draw(g, tileSize);
+                }
             }
         }
     }

@@ -1,3 +1,7 @@
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -8,6 +12,7 @@ public class Client extends Thread {
 	int port;
 	ArrayList<Item> items = new ArrayList<>();
 	Packet rec;
+	private JSONObject received;
 
 
 	public Client(String ip, int port) {
@@ -29,55 +34,92 @@ public class Client extends Thread {
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-			try(ByteArrayInputStream b = new ByteArrayInputStream(packet.getData())){
-				try(ObjectInputStream o = new ObjectInputStream(b)){
-					Packet packetRec = (Packet) o.readObject();
-					rec = packetRec;
-					synchronized (this) {
 
-						notifyAll();
-					}
-				} catch (ClassNotFoundException e) {
-					throw new RuntimeException(e);
-				}
-			} catch (IOException e) {
-				throw new RuntimeException(e);
+			String message = new String(packet.getData());
+
+			received = new JSONObject(message);
+			synchronized (this) {
+				notifyAll();
 			}
+
+
+			ArrayList<Item> items = new ArrayList<>();
+
+			System.out.println(received);
+			JSONArray ja = received.getJSONArray("items");
+			for (int i=0; i < ja.length(); i++) {
+				JSONObject item = ja.getJSONObject(i);
+
+				String[] colors = item.getString("color").split("-");
+				Color drawingC = new Color(Integer.parseInt(colors[0]) , Integer.parseInt(colors[1]), Integer.parseInt(colors[2]));
+				JSONArray jaX =  item.getJSONArray("x");
+				ArrayList<Integer> Dx = new ArrayList<>();
+				for (int j=0; j < jaX.length(); j++) {
+					Dx.add((Integer) jaX.get(j));
+				}
+				JSONArray jaY =  item.getJSONArray("y");
+				ArrayList<Integer> Dy = new ArrayList<>();
+				for (int j=0; j < jaY.length(); j++) {
+					Dy.add((Integer) jaY.get(j));
+				}
+				if (item.has("d")) {
+					JSONArray jaD = item.getJSONArray("d");
+				 	ArrayList<Character> Dd= new ArrayList<>();
+					for (int j = 0; j < jaD.length(); j++) {
+						Dd.add(((String) jaD.get(j)).charAt(0));
+					}
+					Drawing snake = new Drawing(Dx,Dy,Dd,drawingC,item.getString("id"),item.getInt("value"));
+					items.add(snake);
+				} else {
+					Drawing snake = new Drawing(Dx, Dy, null, drawingC, item.getString("id"), item.getInt("value"));
+					items.add(snake);
+				}
+
+
+
+			}
+			this.items = items;
+
 		}
 	}
 
 	public void sendItem(Item item) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			 ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-			items.add(item);
-			Packet p = new Packet(items);
-			oos.writeObject(p);
-			DatagramPacket packetSend = new DatagramPacket(baos.toByteArray(), baos.toByteArray().length, ip, port);
-			s.send(packetSend);
-			oos.flush();
-			baos.flush();
-			items = new ArrayList<>();
+		JSONObject snake = new JSONObject();
+		snake.put("id",item.toString());
+		snake.put("x", item.x);
+		snake.put("y", item.y);
+		snake.put("d", ((Snake)item).d);
+		snake.put("value", item.value);
+		snake.put("color", item.color.getRed()+"-"+item.color.getGreen()+"-"+item.color.getBlue());
+		JSONObject itemsJO = new JSONObject();
+		itemsJO.put("snake", snake);
+
+
+		byte[] data = itemsJO.toString().getBytes();
+		DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
+		try {
+			s.send(packet);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	public ArrayList<Item> getItems() {
-		if (rec == null) {
+		if (received == null) {
 			return null;
 		}
-		return rec.items;
+		return items;
 	}
 	public Integer getRow() {
-		if (rec == null) {
+		if (received == null) {
 			return null;
 		}
-		return rec.getRow();
+		return received.getInt("row");
 	}
 	public Integer getCol() {
-		if (rec == null) {
+		if (received == null) {
 			return null;
 		}
-		return rec.getCol();
+		return received.getInt("col");
 	}
 }

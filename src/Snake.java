@@ -7,8 +7,11 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
+import org.json.JSONObject;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +23,6 @@ public class Snake extends Item {
     int sizeStart;
     char direction = 'r';
     KeyHandler keyHandler;
-    ArrayList<Character> d = new ArrayList<>();
     ImageIcon headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
     static Client c;
     int delay;
@@ -39,6 +41,7 @@ public class Snake extends Item {
         this.r = r;
         this.g = g;
         this.b = b;
+        this.color = new Color(0,255,0);
 
 
         headL = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-head-l.png")));
@@ -221,7 +224,7 @@ public class Snake extends Item {
 
 
     public char getDirection() {
-        return direction;
+        return d.get(0);
     }
 
     public String toString() {
@@ -233,11 +236,17 @@ public class Snake extends Item {
                 if (items.get(i).equals(this)) {
                     x = items.get(i).x;
                     y = items.get(i).y;
-                    d = ((Snake) items.get(i)).d;
+                    d = items.get(i).d;
                     value = items.get(i).value;
                 }
             }
         }
+    }
+    @Override
+    public JSONObject jsonify() {
+        JSONObject json = super.jsonify();
+        json.put("d", d);
+        return json;
     }
 }
 
