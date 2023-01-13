@@ -7,8 +7,8 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Timer;
+import java.awt.Color;
 
 public class Banana extends Fruit {
 

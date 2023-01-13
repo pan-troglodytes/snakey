@@ -7,7 +7,7 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
-import javax.swing.*;
+import javax.swing.JFrame;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -15,17 +15,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Main {
-    static ArrayList<Item> orphans = new ArrayList<>();
-    static ArrayList<ItemSpawner> spawners = new ArrayList<>();
-    static boolean server = false;
-    static String name = "";
-    static String ip = "127.0.0.1";
-    static String port = "61529";
-    static int col = 15;
-    static int row = 15;
-    static int r = 255;
-    static int g = 0;
-    static int b = 0;
+    private static ArrayList<Item> orphans = new ArrayList<>();
+    private static ArrayList<ItemSpawner> spawners = new ArrayList<>();
+    private static boolean server = false;
+    private static String name = "";
+    private static String ip = "127.0.0.1";
+    private static String port = "61529";
+    private static int col = 15;
+    private static int row = 15;
+    private static int r = 255;
+    private static int g = 0;
+    private static int b = 0;
 
 
     public static void main(String[] args) throws IOException {
@@ -75,8 +75,8 @@ public class Main {
                if (quePlayers.size() > 0) {
                    for (int j = 0; j < items.size(); j++) {
                        for (int k = 0; k < items.get(j).x.size(); k++) {
-                           if (quePlayers.get(0).i instanceof Snake && !(items.get(j).equals(quePlayers.get(0).i) && k == 0) && quePlayers.get(0).i.x.get(0).equals(items.get(j).x.get(k)) && quePlayers.get(0).i.y.get(0).equals(items.get(j).y.get(k))) {
-                               ((Snake) quePlayers.get(0).i).observe(items.get(j));
+                           if (quePlayers.get(0).getItem() instanceof Snake && !(items.get(j).equals(quePlayers.get(0).getItem()) && k == 0) && quePlayers.get(0).getItem().x.get(0).equals(items.get(j).x.get(k)) && quePlayers.get(0).getItem().y.get(0).equals(items.get(j).y.get(k))) {
+                               ((Snake) quePlayers.get(0).getItem()).observe(items.get(j));
                            }
                        }
                    }
@@ -85,7 +85,7 @@ public class Main {
                    for (int j = 0; j < allPlayers.size(); j++) {
                        ArrayList<Item> toSend = new ArrayList<>();
                        for (int k = 0; k < items.size(); k++) {
-                           if (items.get(k).equals(allPlayers.get(j).i) && !items.get(k).equals(quePlayers.get(0).i)) {
+                           if (items.get(k).equals(allPlayers.get(j).getItem()) && !items.get(k).equals(quePlayers.get(0).getItem())) {
 
                            } else {
                                toSend.add(items.get(k));

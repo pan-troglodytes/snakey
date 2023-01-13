@@ -7,27 +7,30 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
-import com.sun.jdi.ArrayReference;
+//import com.sun.jdi.ArrayReference;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements ActionListener {
-    final int resolution;
-    final int scale;
-    final int tileSize;
-    final int col;
-    final int row;
-    final int width;
-    final int height;
-    ArrayList<ItemSpawner> itemSpawners = new ArrayList<>();
-    ArrayList<Item> itemOrphans = new ArrayList<>();
-    Client c;
-    ArrayList<Item> items = new ArrayList<>();
+    private final int resolution;
+    private final int scale;
+    private final int tileSize;
+    private final int col;
+    private final int row;
+    private final int width;
+    private final int height;
+    private ArrayList<ItemSpawner> itemSpawners = new ArrayList<>();
+    private ArrayList<Item> itemOrphans = new ArrayList<>();
+    private Client c;
+    private ArrayList<Item> items = new ArrayList<>();
 
     public GamePanel(int col, int row, int resolution, int scale, ArrayList<ItemSpawner> spawners, ArrayList<Item> orphans, Client c) {
         this.c = c;
@@ -48,7 +51,6 @@ public class GamePanel extends JPanel implements ActionListener {
         new Timer(30,this).start();
         Thread t = new Thread( itemOrphans.get(0));
         t.start();
-
     }
 
     @Override

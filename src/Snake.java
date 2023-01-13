@@ -10,23 +10,26 @@
 import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.ImageIcon;
 import javax.swing.plaf.ColorUIResource;
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class Snake extends Item {
 
-    int xStart;
-    int yStart;
-    int sizeStart;
-    char direction = 'r';
-    KeyHandler keyHandler;
-    ImageIcon headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
-    static Client c;
-    int delay;
-    int r, g, b;
+    protected int xStart;
+    protected int yStart;
+    protected int sizeStart;
+    protected char direction = 'r';
+    protected KeyHandler keyHandler;
+    protected ImageIcon headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
+    protected static Client c;
+    protected int delay;
+    protected int r, g, b;
 
     public Snake(String id, KeyHandler keyHandler, int startingSize, int delay, int x, int y, String idSpawner, int r, int g, int b) throws IOException {
         super(idSpawner);
@@ -113,10 +116,17 @@ public class Snake extends Item {
             die();
         }
         switch (direction) {
-            case 'l' -> x.set(0, x.get(0) - 1);
-            case 'd' -> y.set(0, y.get(0) + 1);
-            case 'u' -> y.set(0, y.get(0) - 1);
-            case 'r' -> x.set(0, x.get(0) + 1);
+            case 'l':
+                x.set(0, x.get(0) - 1);
+                break;
+            case 'd':
+                y.set(0, y.get(0) + 1);
+                break;
+            case 'u':
+                y.set(0, y.get(0) - 1);
+                break;
+            case 'r':
+                x.set(0, x.get(0) + 1);
         }
     }
 

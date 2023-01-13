@@ -7,10 +7,11 @@
 
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Color;
 
 public class Portal extends Item {
-    Portal pair;
+    protected Portal pair;
 
     public Portal(String idSpawner) {
         super(idSpawner);
@@ -47,10 +48,18 @@ public class Portal extends Item {
             snake.x.set(0, pos[0]);
             snake.y.set(0, pos[1]);
             switch (snake.getDirection()) {
-                case 'l' -> snake.x.set(0, snake.x.get(0) - 1);
-                case 'd' -> snake.y.set(0, snake.y.get(0) + 1);
-                case 'u' -> snake.y.set(0, snake.y.get(0) - 1);
-                case 'r' -> snake.x.set(0, snake.x.get(0) + 1);
+                case 'l':
+                    snake.x.set(0, snake.x.get(0) - 1);
+                    break;
+                case 'd':
+                    snake.y.set(0, snake.y.get(0) + 1);
+                    break;
+                case 'u':
+                    snake.y.set(0, snake.y.get(0) - 1);
+                    break;
+                case 'r':
+                    snake.x.set(0, snake.x.get(0) + 1);
+                    break;
             }
         }
     }

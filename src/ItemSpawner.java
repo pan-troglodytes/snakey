@@ -12,14 +12,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class ItemSpawner {
-    ArrayList<Item> items = new ArrayList<>();
-    int itemMax = 3;
-    int[] coordsTopLeft;
-    int[] coordsBotRight;
-
-    Class<?> itemType;
-    int time = 0;
-    int delay;
+    private ArrayList<Item> items = new ArrayList<>();
+    private int itemMax = 3;
+    private int[] coordsTopLeft;
+    private int[] coordsBotRight;
+    private Class<?> itemType;
+    private int time = 0;
+    private int delay;
     ItemSpawner(Class<?> itemType, int x1, int y1, int x2, int y2, int max, int delay) {
         coordsTopLeft = new int[] {x1,y1};
         coordsBotRight = new int[] {x2,y2};

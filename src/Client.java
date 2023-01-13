@@ -1,9 +1,13 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.awt.*;
-import java.io.*;
-import java.net.*;
+import java.awt.Color;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class Client extends Thread {
@@ -62,18 +66,17 @@ public class Client extends Thread {
 				for (int j=0; j < jaY.length(); j++) {
 					Dy.add((Integer) jaY.get(j));
 				}
+				 ArrayList<Character> Dd = null;
 				if (item.has("d")) {
-					JSONArray jaD = item.getJSONArray("d");
-				 	ArrayList<Character> Dd= new ArrayList<>();
+					JSONArray jaD = null;
+					jaD = item.getJSONArray("d");
+				 	Dd= new ArrayList<>();
 					for (int j = 0; j < jaD.length(); j++) {
 						Dd.add(((String) jaD.get(j)).charAt(0));
 					}
-					Drawing snake = new Drawing(Dx,Dy,Dd,drawingC,item.getString("id"),item.getInt("value"));
-					items.add(snake);
-				} else {
-					Drawing snake = new Drawing(Dx, Dy, null, drawingC, item.getString("id"), item.getInt("value"));
-					items.add(snake);
 				}
+				Drawing snake = new Drawing(Dx,Dy,Dd,drawingC,item.getString("id"),item.getInt("value"));
+				items.add(snake);
 
 
 

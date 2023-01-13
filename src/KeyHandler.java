@@ -14,7 +14,7 @@ import java.io.Serializable;
 
 public class KeyHandler extends KeyAdapter implements Serializable {
 
-    int up, down, left, right;
+    protected int up, down, left, right;
 
     KeyHandler(int up, int down, int left, int right) {
         this.up = up;

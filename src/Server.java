@@ -1,21 +1,23 @@
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.awt.*;
-import java.io.*;
+import java.awt.Color;
+import java.io.IOException;
 import java.lang.reflect.Array;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
 public class Server extends Thread {
-	DatagramSocket s;
-	int col, row;
-	Inventory inv;
-
-	ArrayList<Player> quePlayers;
+	private DatagramSocket s;
+	private int col, row;
+	private Inventory inv;
+	private ArrayList<Player> quePlayers;
 	public Server(int port, int col, int row, Inventory inv, ArrayList<Player> quePlayers) {
 		try {
 			s = new DatagramSocket(port);
@@ -80,7 +82,7 @@ public class Server extends Thread {
 					// add new players
 					boolean in = false;
 					for (int i = 0; i < player.size(); i++) {
-						if (player.get(i).ia.equals(packet.getSocketAddress())) {
+						if (player.get(i).getInetSockerAddress().equals(packet.getSocketAddress())) {
 							player.get(i).setDate(new Date());
 							in = true;
 						}
@@ -105,9 +107,9 @@ public class Server extends Thread {
 			// remove disconnected players
 			ArrayList<Integer> remove = new ArrayList<>();
 			for (int j = 0; j < player.size(); j++) {
-				if (new Date().getTime() - player.get(j).d.getTime() > ((Snake) player.get(j).i).delay + 100) {
+				if (new Date().getTime() - player.get(j).getDate().getTime() > ((Snake) player.get(j).getItem()).delay + 100) {
 					synchronized (inv) {
-						inv.items.remove(player.get(j).i);
+						inv.items.remove(player.get(j).getItem());
 					}
 					remove.add(j);
 				}
@@ -139,7 +141,7 @@ public class Server extends Thread {
 			itemsJO.put("row", row);
 			itemsJO.put("col", col);
 			byte[] data = itemsJO.toString().getBytes();
-			DatagramPacket packet = new DatagramPacket(data, data.length, player.ia.getAddress(), player.ia.getPort());
+			DatagramPacket packet = new DatagramPacket(data, data.length, player.getInetSockerAddress().getAddress(), player.getInetSockerAddress().getPort());
 			try {
 				s.send(packet);
 			} catch (IOException e) {

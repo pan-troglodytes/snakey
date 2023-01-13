@@ -9,20 +9,19 @@
  */
 import org.json.JSONObject;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public abstract class Item implements Serializable, Runnable{
-    int value = 0;
-    String id = this.getClass().getName() + "@" + Integer.toHexString(this.hashCode());
-
-    ArrayList<Integer> x = new ArrayList<>();
-    ArrayList<Integer> y = new ArrayList<>();
-    ArrayList<Character> d = new ArrayList<>();
-
-    Color color;
-    String idSpawner;
+    protected int value = 0;
+    protected String id = this.getClass().getName() + "@" + Integer.toHexString(this.hashCode());
+    protected ArrayList<Integer> x = new ArrayList<>();
+    protected ArrayList<Integer> y = new ArrayList<>();
+    protected ArrayList<Character> d = new ArrayList<>();
+    protected Color color;
+    protected String idSpawner;
 
 
     public Item(String idSpawner) {
