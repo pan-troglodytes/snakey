@@ -131,7 +131,6 @@ public class Server extends Thread {
 
 	}
 	public void sendPacket(Player player, ArrayList<Item> items) {
-		System.out.println(items);
 			JSONObject itemsJO = new JSONObject();
 			JSONArray ja = new JSONArray();
 			for (int i=0; i < items.size(); i++) {

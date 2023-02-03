@@ -2,9 +2,9 @@ import java.util.ArrayList;
 
 public class Inventory extends Thread {
 
-    ArrayList<Item> items = new ArrayList<>();
-    ArrayList<Item> orphans;
-    ArrayList<ItemSpawner> spawners;
+    protected ArrayList<Item> items = new ArrayList<>();
+    protected ArrayList<Item> orphans;
+    protected ArrayList<ItemSpawner> spawners;
 
     public Inventory(ArrayList<Item> orphans, ArrayList<ItemSpawner> spawners) {
         this.orphans = orphans;

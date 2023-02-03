@@ -11,12 +11,12 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class Client extends Thread {
-	InetAddress ip;
-	DatagramSocket s;
-	int port;
-	ArrayList<Item> items = new ArrayList<>();
-	Packet rec;
-	private JSONObject received;
+	protected InetAddress ip;
+	protected DatagramSocket s;
+	protected int port;
+	protected ArrayList<Item> items = new ArrayList<>();
+	protected Packet rec;
+	protected JSONObject received;
 
 
 	public Client(String ip, int port) {
@@ -49,7 +49,6 @@ public class Client extends Thread {
 
 			ArrayList<Item> items = new ArrayList<>();
 
-			System.out.println(received);
 			JSONArray ja = received.getJSONArray("items");
 			for (int i=0; i < ja.length(); i++) {
 				JSONObject item = ja.getJSONObject(i);

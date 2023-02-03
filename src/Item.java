@@ -29,11 +29,9 @@ public abstract class Item implements Serializable, Runnable{
     };
 
     public void draw(Graphics g, int tileSize) {
-        for (Integer i:x) {
-            for (Integer j:y) {
+        for (int i=0; i < x.size(); i++) {
                 g.setColor(color);
-                g.fillRect(i * tileSize, j * tileSize, tileSize, tileSize);
-            }
+                g.fillRect(x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize);
         }
     }
 

@@ -66,7 +66,6 @@ public class GamePanel extends JPanel implements ActionListener {
         if (items != null) {
             for (Item item : items) {
                 if (!item.getId().equals(itemOrphans.get(0).getId())) {
-                    System.out.println("ture");
                     item.draw(g, tileSize);
                 }
             }
