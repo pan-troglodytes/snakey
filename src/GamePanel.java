@@ -30,7 +30,6 @@ public class GamePanel extends JPanel implements ActionListener {
     private ArrayList<ItemSpawner> itemSpawners = new ArrayList<>();
     private ArrayList<Item> itemOrphans = new ArrayList<>();
     private Client c;
-    private ArrayList<Item> items = new ArrayList<>();
 
     public GamePanel(int col, int row, int resolution, int scale, ArrayList<ItemSpawner> spawners, ArrayList<Item> orphans, Client c) {
         this.c = c;
@@ -61,7 +60,8 @@ public class GamePanel extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         itemOrphans.get(0).draw(g, tileSize);
-        items = c.getItems();
+        ArrayList<Drawing> items = new ArrayList<>();
+        items.addAll(c.getItems());
         ((Snake) itemOrphans.get(0)).update(items);
         if (items != null) {
             for (Item item : items) {

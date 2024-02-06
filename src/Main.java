@@ -8,11 +8,15 @@
     You should have received a copy of the GNU General Public License along with snakey. If not, see <https://www.gnu.org/licenses/>.
  */
 import javax.swing.JFrame;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 
 public class Main {
     private static ArrayList<Item> orphans = new ArrayList<>();
@@ -25,6 +29,7 @@ public class Main {
     private static int row = 15;
     private static int r = 255;
     private static int g = 0;
+    private static ArrayList<String> imagePaths;
     private static int b = 0;
 
 
@@ -46,6 +51,14 @@ public class Main {
                 g = Integer.parseInt(args[i+2]);
                 b = Integer.parseInt(args[i+3]);
             }
+            if (args[i].equals("--sprite-dir")) {
+                int j = i+1;
+                imagePaths = new ArrayList<>();
+                while (j < args.length ) {
+                    imagePaths.add(args[j]);
+                    j++;
+                }
+            }
         }
 
         if (server) {
@@ -64,7 +77,7 @@ public class Main {
                Inventory inv = new Inventory(orphans, spawners);
                inv.start();
                inv.addOrphans();
-               Server s = new Server(Integer.parseInt(port), col, row, inv,  quePlayers);
+               Server s = new Server(Integer.parseInt(port), col, row, inv,  quePlayers, allPlayers);
            s.start();
            while (true) {
                ArrayList<Item> newItems = s.recievePacket(allPlayers);
@@ -91,7 +104,14 @@ public class Main {
                                toSend.add(items.get(k));
                            }
                        }
-                       s.sendPacket(allPlayers.get(j), toSend);
+
+			            JSONObject itemsJO = new JSONObject();
+			            JSONArray ja = new JSONArray();
+			            for (int i=0; i < items.size(); i++) { // was toSend.size.()
+				            ja.put(items.get(i).jsonify());
+			            }
+                        itemsJO.put("items", ja);
+                       s.sendPacket(allPlayers.get(j), itemsJO);
                        toSend.clear();
                    }
                    quePlayers.remove(0);
@@ -108,9 +128,11 @@ public class Main {
             Client c = new Client(ip,Integer.parseInt(port));
             c.start();
 	    if (name.equals("slowboi")) {
-            	orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT), 4, 1000 ,(int)(col * .2),(int)(row * .2), null,r,g,b));
+            	orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT), 4, 1000 ,(int)(col * .2),(int)(row * .2), null,r,g,b, imagePaths));
+        } else if (name.equals("slowboi2")) {
+            	orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT), 4, 1000 ,(int)(col * .2),(int)(row * .2), null,r,g,b, imagePaths));
 	    } else {
-            	orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT), 4, (int) (Math.log10((col + row))*100) ,(int)(col * .2),(int)(row * .2), null,r,g,b));
+            	orphans.add(new Snake(name, new KeyHandler(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT), 4, (int) (Math.log10((col + row))*100) ,(int)(col * .2),(int)(row * .2), null,r,g,b, imagePaths));
 	    }
             // sending packet to server will trigger a response containing the panel dimensions
             Snake.c = c;

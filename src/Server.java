@@ -13,12 +13,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
+
 public class Server extends Thread {
 	private DatagramSocket s;
 	private int col, row;
 	private Inventory inv;
 	private ArrayList<Player> quePlayers;
-	public Server(int port, int col, int row, Inventory inv, ArrayList<Player> quePlayers) {
+	private ArrayList<Player> allPlayers;
+	private HashMap<String,ArrayList<String>> itemImages = new HashMap();
+	public Server(int port, int col, int row, Inventory inv, ArrayList<Player> quePlayers, ArrayList<Player> allPlayers) {
 		try {
 			s = new DatagramSocket(port);
 		} catch (SocketException e) {
@@ -28,6 +31,7 @@ public class Server extends Thread {
 		this.row = row;
 		this.inv = inv;
 		this.quePlayers = quePlayers;
+		this.allPlayers = allPlayers;
 	}
 
 	public ArrayList<Item> recievePacket(ArrayList<Player> player) {
@@ -44,13 +48,14 @@ public class Server extends Thread {
 		String message = new String(packet.getData());
 
 		JSONObject jo = new JSONObject(message);
+
 		Iterator keys = jo.keys();
 		while (keys.hasNext()) {
 			Object key = keys.next();
 			if (((String) key).equals("snake")) {
 				Snake snake = null;
 				try {
-					snake = new Snake("", null, 4, 1000, (int) (col * .2), (int) (row * .2), null, 0, 0, 0);
+					snake = new Snake("", null, 4, 1000, (int) (col * .2), (int) (row * .2), null, 0, 0, 0, new ArrayList<>());
 					JSONObject jo2 = jo.getJSONObject((String) key);
 					snake.id = jo2.getString("id");
 
@@ -72,6 +77,17 @@ public class Server extends Thread {
 					for (int i = 0; i < jaD.length(); i++) {
 						snake.d.add(((String) jaD.get(i)).charAt(0));
 					}
+
+					JSONArray jaIo = jo2.getJSONArray("image-order");
+					snake.imageOrder = new ArrayList<>();
+					for (int i = 0; i < jaIo.length(); i++) {
+						snake.imageOrder.add(((Integer) jaIo.get(i)));
+					}
+					
+
+
+
+
 					snake.value = jo2.getInt("value");
 					String[] colors = jo2.getString("color").split("-");
 					snake.setColor(new Color(Integer.parseInt(colors[0]), Integer.parseInt(colors[1]), Integer.parseInt(colors[2])));
@@ -88,6 +104,32 @@ public class Server extends Thread {
 						}
 					}
 					if (!in) {
+						ArrayList<String> imageNew = new ArrayList<>();
+						if (jo2.has("image-new")) {
+							JSONArray jaIn = jo2.getJSONArray("image-new");
+							for (int i = 0; i < jaIn.length(); i++) {
+								imageNew.add(((String) jaIn.get(i)));
+							}
+						}
+						
+						// new player sends its images to all other players
+						itemImages.put(snake.id, imageNew);
+						JSONObject joSimg = new JSONObject();
+						JSONObject joSid = new JSONObject();
+						joSid.put(jo2.getString("id"), new JSONArray(itemImages.get(jo2.getString("id"))));
+						joSimg.put("images",joSid);
+						for (int i=0; i < allPlayers.size(); i++) {
+							sendPacket(allPlayers.get(i), joSimg);
+						}
+
+						// new player recieves imges from all other players
+						for (int i=0; i < allPlayers.size(); i++) {
+							JSONObject joRimg = new JSONObject();
+							JSONObject joRid = new JSONObject();
+							joRid.put(allPlayers.get(i).getItem().getId(), new JSONArray(itemImages.get(allPlayers.get(i).getItem().getId())));
+							joRimg.put("images",joRid);
+							sendPacket(p, joRimg);
+						}
 						p.setDate(new Date());
 						player.add(p);
 					}
@@ -130,16 +172,10 @@ public class Server extends Thread {
 			return items;
 
 	}
-	public void sendPacket(Player player, ArrayList<Item> items) {
-			JSONObject itemsJO = new JSONObject();
-			JSONArray ja = new JSONArray();
-			for (int i=0; i < items.size(); i++) {
-				ja.put(items.get(i).jsonify());
-			}
-			itemsJO.put("items", ja);
-			itemsJO.put("row", row);
-			itemsJO.put("col", col);
-			byte[] data = itemsJO.toString().getBytes();
+	public void sendPacket(Player player, JSONObject payload) {
+			payload.put("row", row);
+			payload.put("col", col);
+			byte[] data = payload.toString().getBytes();
 			DatagramPacket packet = new DatagramPacket(data, data.length, player.getInetSockerAddress().getAddress(), player.getInetSockerAddress().getPort());
 			try {
 				s.send(packet);

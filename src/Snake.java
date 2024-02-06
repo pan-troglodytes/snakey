@@ -10,12 +10,11 @@
 import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.plaf.ColorUIResource;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -26,12 +25,12 @@ public class Snake extends Item {
     protected int sizeStart;
     protected char direction = 'r';
     protected KeyHandler keyHandler;
-    protected ImageIcon headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
+    protected int headL, headR, headU, headD, bodyLR, bodyUD, tailL, tailR, tailU, tailD, cornerUR, cornerRD, cornerDL, cornerLU, beheadL, beheadR, beheadU, beheadD;
     protected static Client c;
     protected int delay;
     protected int r, g, b;
 
-    public Snake(String id, KeyHandler keyHandler, int startingSize, int delay, int x, int y, String idSpawner, int r, int g, int b) throws IOException {
+    public Snake(String id, KeyHandler keyHandler, int startingSize, int delay, int x, int y, String idSpawner, int r, int g, int b, ArrayList<String> imagePaths) throws IOException {
         super(idSpawner);
         this.id = id;
         this.keyHandler = keyHandler;
@@ -46,26 +45,51 @@ public class Snake extends Item {
         this.b = b;
         this.color = new Color(0,255,0);
 
+        for (int i=0; i < imagePaths.size(); i++) {
+            System.out.println(imagePaths.get(i));
+            images.add(ImageIO.read( new File(imagePaths.get(i))));
+        }
 
-        headL = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-head-l.png")));
-        headR = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-head-r.png")));
-        headU = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-head-u.png")));
-        headD = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-head-d.png")));
-        bodyLR = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-body-lr.png")));
-        bodyUD = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-body-ud.png")));
-        cornerUR = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-body-corner-ur.png")));
-        cornerRD = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-body-corner-rd.png")));
-        cornerDL = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-body-corner-dl.png")));
-        cornerLU = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-body-corner-lu.png")));
-        tailU = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-tail-u.png")));
-        tailD = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-tail-d.png")));
-        tailL = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-tail-l.png")));
-        tailR = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-tail-r.png")));
-        beheadD = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-behead-d.png")));
-        beheadL = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-behead-l.png")));
-        beheadR = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-behead-r.png")));
-        beheadU = new ImageIcon(ImageIO.read(getClass().getResource("sprites/snake-behead-u.png")));
+        /*
+        images.add(ImageIO.read(new File("sprites2/snake-head-l.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-head-r.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-head-u.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-head-d.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-body-lr.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-body-ud.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-body-corner-ur.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-body-corner-rd.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-body-corner-dl.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-body-corner-lu.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-tail-u.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-tail-d.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-tail-l.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-tail-r.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-behead-d.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-behead-l.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-behead-r.png")));
+        images.add(ImageIO.read(new File("sprites2/snake-behead-u.png")));
+        */
 
+        beheadD = 0;
+        beheadL = 1;
+        beheadR = 2;
+        beheadU = 3;
+        cornerDL = 4;
+        cornerLU = 5;
+        cornerRD = 6;
+        cornerUR = 7;
+        bodyLR = 8;
+        bodyUD = 9;
+        headD = 10;
+        headL = 11;
+        headR = 12;
+        headU = 13;
+        tailD = 14;
+        tailL = 15;
+        tailR = 16;
+        tailU = 17;
+        
         this.sizeStart = startingSize;
         this.value = startingSize;
     }
@@ -160,50 +184,50 @@ public class Snake extends Item {
                 if (i == 0) {
                     if (x.size() == 1) {
                         if (d.get(0) == 'l') {
-                            drawWith = beheadL.getImage();
+                            drawWith = images.get(beheadL);
                         } else if (d.get(0) == 'd') {
-                            drawWith = beheadD.getImage();
+                            drawWith = images.get(beheadD);
                         } else if (d.get(0) == 'u') {
-                            drawWith = beheadU.getImage();
+                            drawWith = images.get(beheadU);
                         } else if (d.get(0) == 'r') {
-                            drawWith = beheadR.getImage();
+                            drawWith = images.get(beheadR);
                         }
                     } else {
                         if (d.get(0) == 'l') {
-                            drawWith = headL.getImage();
+                            drawWith = images.get(headL);
                         } else if (d.get(0) == 'd') {
-                            drawWith = headD.getImage();
+                            drawWith = images.get(headD);
                         } else if (d.get(0) == 'u') {
-                            drawWith = headU.getImage();
+                            drawWith = images.get(headU);
                         } else if (d.get(0) == 'r') {
-                            drawWith = headR.getImage();
+                            drawWith = images.get(headR);
                         }
                     }
                 } else if (i == x.size()-1  ) {
                     for (int j=i; j >= 0; j--) {
                         if (x.get(j) != x.get(i) || y.get(j) != y.get(i)) {
                             if (y.get(j) < y.get(i) && x.get(j) == x.get(i)) {
-                                drawWith = tailU.getImage();
+                                drawWith = images.get(tailU);
                             }
                             if (y.get(j) > y.get(i) && x.get(j) == x.get(i)) {
-                                drawWith = tailD.getImage();
+                                drawWith = images.get(tailD);
                             }
                             if (x.get(j) < x.get(i) && y.get(j) == y.get(i)) {
-                                drawWith = tailL.getImage();
+                                drawWith = images.get(tailL);
                             }
                             if (x.get(j) > x.get(i) && y.get(j) == y.get(i)) {
-                                drawWith = tailR.getImage();
+                                drawWith = images.get(tailR);
                             }
                             break;
                         }
                     }
                 } else {
                     if (x.get(i) == x.get(i - 1) && y.get(i) != y.get(i - 1) && y.get(i) != y.get(i + 1) || x.get(i) == x.get(i + 1) && y.get(i) != y.get(i + 1) && y.get(i) != y.get(i - 1)) {
-                          drawWith = bodyUD.getImage();
+                          drawWith = images.get(bodyUD);
                         }
 
                         if (y.get(i) == y.get(i - 1) && x.get(i) != x.get(i - 1) && x.get(i) != x.get(i + 1) || y.get(i) == y.get(i + 1) && x.get(i) != x.get(i + 1) && x.get(i) != x.get(i - 1)) {
-                            drawWith = bodyLR.getImage();
+                            drawWith = images.get(bodyLR);
                         }
 
                         // corners are determined by segment direction, so that they work properly when disjointed by portals
@@ -211,22 +235,98 @@ public class Snake extends Item {
                             // if the previous segment is facing the right and the current segment is facing down
                             // OR
                             // the previous segment is facing up and the current segment is facing the left
-                            drawWith = cornerDL.getImage();
+                            drawWith = images.get(cornerDL);
                         }
                         if (d.get(i + 1) == 'l' && d.get(i) == 'u' || d.get(i + 1) == 'd' && d.get(i) == 'r') {
-                            drawWith = cornerUR.getImage();
+                            drawWith = images.get(cornerUR);
                         }
                         if (d.get(i + 1) == 'l' && d.get(i) == 'd' || d.get(i + 1) == 'u' && d.get(i) == 'r') {
-                            drawWith = cornerRD.getImage();
+                            drawWith = images.get(cornerRD);
                         }
                         if (d.get(i + 1) == 'r' && d.get(i) == 'u' || d.get(i + 1) == 'd' && d.get(i) == 'l') {
-                            drawWith = cornerLU.getImage();
+                            drawWith = images.get(cornerLU);
                         }
                 }
                 g.setColor(new Color(r,this.g,b));
             g.drawString(id, x.get(0)*tileSize, (y.get(0)-1)*tileSize);
             g.drawImage(drawWith, x.get(i) * tileSize, y.get(i) * tileSize, tileSize, tileSize, null);
         }
+
+            //g.drawImage(images.get(0), 0, 0, tileSize, tileSize, null);
+    }
+    public ArrayList<Integer> getRenderOrder() {
+        ArrayList<Integer> imageOrder = new ArrayList<>();
+        for (int i = 0; i < x.size() ; i++ ) {
+            int imageNew = 0;
+                if (i == 0) {
+                    if (x.size() == 1) {
+                        if (d.get(0) == 'l') {
+                            imageNew = beheadL;
+                        } else if (d.get(0) == 'd') {
+                            imageNew = beheadD;
+                        } else if (d.get(0) == 'u') {
+                            imageNew = beheadU;
+                        } else if (d.get(0) == 'r') {
+                            imageNew = beheadR;
+                        }
+                    } else {
+                        if (d.get(0) == 'l') {
+                            imageNew = headL;
+                        } else if (d.get(0) == 'd') {
+                            imageNew = headD;
+                        } else if (d.get(0) == 'u') {
+                            imageNew = headU;
+                        } else if (d.get(0) == 'r') {
+                            imageNew = headR;
+                        }
+                    }
+                } else if (i == x.size()-1  ) {
+                    for (int j=i; j >= 0; j--) {
+                        if (x.get(j) != x.get(i) || y.get(j) != y.get(i)) {
+                            if (y.get(j) < y.get(i) && x.get(j) == x.get(i)) {
+                                imageNew = tailU;
+                            }
+                            if (y.get(j) > y.get(i) && x.get(j) == x.get(i)) {
+                                imageNew = tailD;
+                            }
+                            if (x.get(j) < x.get(i) && y.get(j) == y.get(i)) {
+                                imageNew = tailL;
+                            }
+                            if (x.get(j) > x.get(i) && y.get(j) == y.get(i)) {
+                                imageNew = tailR;
+                            }
+                            break;
+                        }
+                    }
+                } else {
+                    if (x.get(i) == x.get(i - 1) && y.get(i) != y.get(i - 1) && y.get(i) != y.get(i + 1) || x.get(i) == x.get(i + 1) && y.get(i) != y.get(i + 1) && y.get(i) != y.get(i - 1)) {
+                          imageNew = bodyUD;
+                        }
+
+                        if (y.get(i) == y.get(i - 1) && x.get(i) != x.get(i - 1) && x.get(i) != x.get(i + 1) || y.get(i) == y.get(i + 1) && x.get(i) != x.get(i + 1) && x.get(i) != x.get(i - 1)) {
+                            imageNew = bodyLR;
+                        }
+
+                        // corners are determined by segment direction, so that they work properly when disjointed by portals
+                        if (d.get(i + 1) == 'r' && d.get(i) == 'd' || d.get(i + 1) == 'u' && d.get(i) == 'l') {
+                            // if the previous segment is facing the right and the current segment is facing down
+                            // OR
+                            // the previous segment is facing up and the current segment is facing the left
+                            imageNew = cornerDL;
+                        }
+                        if (d.get(i + 1) == 'l' && d.get(i) == 'u' || d.get(i + 1) == 'd' && d.get(i) == 'r') {
+                            imageNew = cornerUR;
+                        }
+                        if (d.get(i + 1) == 'l' && d.get(i) == 'd' || d.get(i + 1) == 'u' && d.get(i) == 'r') {
+                            imageNew = cornerRD;
+                        }
+                        if (d.get(i + 1) == 'r' && d.get(i) == 'u' || d.get(i + 1) == 'd' && d.get(i) == 'l') {
+                            imageNew = cornerLU;
+                        }
+                }
+                imageOrder.add(imageNew);
+        }
+        return imageOrder;
     }
     public KeyHandler getSnakeControls() {
         return keyHandler;
@@ -240,7 +340,7 @@ public class Snake extends Item {
     public String toString() {
         return id;
     }
-    public void update(ArrayList<Item> items) {
+    public void update(ArrayList<Drawing> items) {
         if (items != null) {
             for (int i = 0; i < items.size(); i++) {
                 if (items.get(i).equals(this)) {
@@ -259,5 +359,4 @@ public class Snake extends Item {
         return json;
     }
 }
-
 

@@ -8,7 +8,6 @@ public class Player {
     Player(InetSocketAddress ia, Item i ) {
         this.ia = ia;
         this.i = i;
-        this.d = d;
     }
     public Item getItem() {
         return i;

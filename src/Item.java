@@ -11,8 +11,10 @@ import org.json.JSONObject;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.util.ArrayList;
+
 
 public abstract class Item implements Serializable, Runnable{
     protected int value = 0;
@@ -22,6 +24,9 @@ public abstract class Item implements Serializable, Runnable{
     protected ArrayList<Character> d = new ArrayList<>();
     protected Color color;
     protected String idSpawner;
+    protected ArrayList<BufferedImage> images = new ArrayList<>();
+    protected boolean imagesSent = false;
+    protected ArrayList<Integer> imageOrder = new ArrayList<>();
 
 
     public Item(String idSpawner) {
@@ -68,6 +73,7 @@ public abstract class Item implements Serializable, Runnable{
 
 
 
+    @Override
     public boolean equals(Object o) {
         return o instanceof Item && getId().equals(((Item) o).getId());
     }
@@ -82,6 +88,18 @@ public abstract class Item implements Serializable, Runnable{
         json.put("y", y);
         json.put("value", value);
         json.put("color", color.getRed()+"-"+color.getGreen()+"-"+color.getBlue());
+        json.put("image-order", imageOrder);
         return json;
+    }
+    public void imagesSent() {
+        this.imagesSent = true;
+    }
+
+    public void updateValues(ArrayList<Integer> x, ArrayList<Integer> y, ArrayList<Character> d, ArrayList<Integer> io, int value) {
+        this.x = x;
+        this.y = y;
+        this.d = d;
+        this.value = value;
+        this.imageOrder = io;
     }
 }

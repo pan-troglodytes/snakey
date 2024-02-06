@@ -1,0 +1,5 @@
+clear && javac -cp .:./lib/json-java.jar ./src/*.java -d ./out && java -cp .:./lib/json-java.jar:./out Main ./out/*.class --server 4494 20 20
+clear && javac -cp .:./lib/json-java.jar ./src/*.java -d ./out && java -cp .:./lib/json-java.jar:./out Main ./out/*.class --client sacha localhost 4494 --sprite-dir ./out/sprites/*
+clear && javac -cp .:./lib/json-java.jar ./src/*.java -d ./out && java -cp .:./lib/json-java.jar:./out Main ./out/*.class --client sacha2 localhost 4494 --sprite-dir ./out/sprites2/*
+clear && javac -cp .:./lib/json-java.jar ./src/*.java -d ./out && java -cp .:./lib/json-java.jar:./out Main ./out/*.class --client slowboi localhost 4494 --sprite-dir ./out/sprites/*
+clear && javac -cp .:./lib/json-java.jar ./src/*.java -d ./out && java -cp .:./lib/json-java.jar:./out Main ./out/*.class --client slowboi2 localhost 4494 --sprite-dir ./out/sprites2/*
